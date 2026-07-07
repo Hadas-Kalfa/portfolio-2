@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hadas Kalfa — Product Designer</title>
+<meta name="description" content="Hadas Kalfa, Product Designer. I design products people come back to — turning ambiguous problems into interfaces that move real business metrics." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#F7F6F3;
+    --surface:#FFFFFF;
+    --ink:#1D1D1F;
+    --secondary:#5B5A57;
+    --muted:#9A968B;
+    --line:#E4E1D8;
+    --line-strong:#D3CFC4;
+    --accent:#0012D6;
+    --accent-soft:#E7E9FB;
+    --good:#1D7A57;
+    --on-dark:#F7F6F3;
+    --on-dark-muted:rgba(247,246,243,.56);
+    --on-dark-line:rgba(247,246,243,.14);
+    --near-black:#0F0F0F;
+    --font-display:"Bricolage Grotesque",-apple-system,system-ui,sans-serif;
+    --font-body:"Poppins",-apple-system,system-ui,sans-serif;
+    --max:1120px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-weight:400;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  ::selection{background:var(--accent);color:#fff;}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px;}
+  .skip-link{position:absolute;left:-9999px;top:0;background:var(--ink);color:var(--paper);padding:12px 18px;border-radius:8px;z-index:100;font-size:14px;}
+  .skip-link:focus{left:16px;top:16px;}
+
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 32px;}
+
+  /* nav */
+  .nav{position:sticky;top:0;z-index:50;background:rgba(247,246,243,0.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;}
+  .brand{font-family:var(--font-display);font-weight:600;font-size:18px;letter-spacing:-0.01em;}
+  .nav-links{display:flex;align-items:center;gap:32px;font-size:15px;font-weight:500;color:var(--secondary);}
+  .nav-links a{transition:color .18s ease;position:relative;}
+  .nav-links a:hover{color:var(--ink);}
+  .nav-links a.cta{color:var(--accent);}
+  .dot{width:5px;height:5px;border-radius:50%;background:var(--good);display:inline-block;margin-right:7px;vertical-align:1px;box-shadow:0 0 0 0 rgba(29,122,87,.5);animation:pulse 2.6s infinite;flex-shrink:0;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(29,122,87,.45);}70%{box-shadow:0 0 0 6px rgba(29,122,87,0);}100%{box-shadow:0 0 0 0 rgba(29,122,87,0);}}
+
+  /* hero */
+  .hero{padding:96px 0 100px;position:relative;overflow:hidden;}
+  .hero-glow{position:absolute;top:-160px;left:50%;transform:translateX(-50%);width:820px;height:520px;background:radial-gradient(circle,rgba(0,18,214,0.08),transparent 70%);pointer-events:none;z-index:0;}
+  .hero-grid{position:absolute;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(to right, rgba(29,29,31,0.035) 1px, transparent 1px),linear-gradient(to bottom, rgba(29,29,31,0.035) 1px, transparent 1px);
+    background-size:44px 44px;
+    -webkit-mask-image:linear-gradient(to bottom, black, transparent 75%);
+    mask-image:linear-gradient(to bottom, black, transparent 75%);
+  }
+  .hero .wrap{position:relative;z-index:1;}
+  .eyebrow{font-family:var(--font-body);font-weight:500;font-size:12px;letter-spacing:0.03em;color:var(--muted);display:inline-flex;align-items:center;}
+  .headline{font-family:var(--font-display);font-weight:600;font-size:clamp(52px,9.2vw,136px);line-height:0.98;letter-spacing:-0.045em;margin:22px 0 0;max-width:16ch;}
+  .headline .accent{color:var(--accent);}
+  .subline{font-size:clamp(17px,2.1vw,20px);color:var(--secondary);max-width:44ch;margin-top:30px;line-height:1.55;}
+  .subline b{font-weight:600;color:var(--ink);}
+  .meta{margin-top:36px;font-size:13px;font-weight:500;color:var(--muted);display:flex;gap:22px;flex-wrap:wrap;letter-spacing:0.02em;}
+
+  /* reveal animation */
+  .rise{opacity:0;transform:translateY(18px);}
+  .in .rise{opacity:1;transform:none;transition:opacity .7s cubic-bezier(.22,.61,.36,1),transform .7s cubic-bezier(.22,.61,.36,1);}
+  .in .d1{transition-delay:.05s;}.in .d2{transition-delay:.14s;}.in .d3{transition-delay:.23s;}.in .d4{transition-delay:.32s;}
+
+  /* section frame */
+  .section{padding:28px 0;border-top:1px solid var(--line);}
+  .sec-label{font-family:var(--font-body);font-weight:500;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);padding:20px 0 4px;}
+
+  /* work list */
+  .work{list-style:none;display:flex;flex-direction:column;gap:22px;}
+  .card{display:block;border:1px solid var(--line);border-radius:28px;padding:40px 40px 36px;background:var(--surface);position:relative;transition:transform .35s cubic-bezier(.22,.61,.36,1),box-shadow .35s ease,border-color .35s ease;}
+  .card:hover,.card:focus-visible{transform:translateY(-6px);box-shadow:0 24px 48px -20px rgba(29,29,31,0.16);border-color:var(--line-strong);}
+  .card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+  .card-idx{font-size:13px;font-weight:500;color:var(--muted);letter-spacing:0.02em;}
+  .card-arrow{width:46px;height:46px;border-radius:50%;border:1px solid var(--line-strong);display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:18px;opacity:0;transform:translate(-10px,10px);transition:opacity .4s ease,transform .4s cubic-bezier(.22,.61,.36,1),border-color .3s ease,color .3s ease;}
+  .card:hover .card-arrow,.card:focus-visible .card-arrow{opacity:1;transform:translate(0,0);border-color:var(--accent);color:var(--accent);}
+  .card-body{display:grid;grid-template-columns:1fr auto;gap:32px;align-items:end;}
+  .card-title{font-family:var(--font-display);font-weight:600;font-size:clamp(26px,3.2vw,36px);letter-spacing:-0.025em;line-height:1.1;}
+  .card-kicker{font-size:14px;color:var(--muted);margin-top:6px;}
+  .card-desc{color:var(--secondary);font-size:16px;margin-top:18px;max-width:52ch;line-height:1.6;}
+  .tags{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;}
+  .tag{font-size:12px;font-weight:500;letter-spacing:0.03em;color:var(--secondary);border:1px solid var(--line-strong);border-radius:20px;padding:4px 13px;}
+  .metric{text-align:right;min-width:150px;}
+  .metric .num{font-family:var(--font-display);font-weight:600;font-size:clamp(34px,4.4vw,48px);letter-spacing:-0.03em;line-height:1;transition:color .3s ease;font-variant-numeric:tabular-nums;color:var(--ink);}
+  .metric.phrase .num{font-size:clamp(20px,2.6vw,27px);white-space:nowrap;}
+  .card:hover .metric .num,.card:focus-visible .metric .num{color:var(--accent);}
+  .metric .lbl{font-size:12px;font-weight:500;color:var(--muted);margin-top:10px;letter-spacing:0.02em;max-width:16ch;margin-left:auto;}
+
+  /* expertise */
+  .expertise{padding:96px 0;}
+  .exp-grid{display:grid;grid-template-columns:1fr;gap:8px;}
+  .exp-head{padding-bottom:24px;}
+  .exp-list{list-style:none;border-top:1px solid var(--line-strong);}
+  .exp-row{border-bottom:1px solid var(--line-strong);padding:34px 20px;margin:0 -20px;display:flex;flex-direction:column;gap:14px;transition:background .5s ease;border-radius:4px;cursor:default;}
+  .exp-row:hover{background:rgba(29,29,31,0.05);}
+  .exp-top{display:flex;align-items:center;gap:22px;transition:transform .5s ease;}
+  .exp-row:hover .exp-top{transform:translateX(16px);}
+  .exp-num{font-size:14px;font-weight:300;color:var(--muted);}
+  .exp-title{font-family:var(--font-display);font-weight:500;font-size:clamp(28px,4.2vw,48px);letter-spacing:-0.045em;}
+  .exp-desc{color:var(--secondary);font-size:14px;font-weight:300;max-width:320px;line-height:1.6;}
+
+  @media (min-width:860px){
+    .exp-grid{grid-template-columns:280px 1fr;gap:32px;}
+    .exp-head{position:sticky;top:96px;align-self:start;}
+    .exp-list{border-top:none;}
+    .exp-row{flex-direction:row;align-items:center;justify-content:space-between;padding:38px 24px;margin:0 -24px;}
+    .exp-row:first-child{border-top:1px solid var(--line-strong);}
+    .exp-desc{text-align:right;}
+  }
+
+  /* recognition strip */
+  .strip{display:flex;flex-wrap:wrap;gap:12px 30px;padding:26px 0 34px;font-size:13px;font-weight:500;color:var(--secondary);}
+  .strip b{font-weight:600;color:var(--ink);}
+
+  /* dark signature block: testimonial + contact */
+  .dark-block{background:var(--near-black);color:var(--on-dark);position:relative;overflow:hidden;border-radius:40px 40px 0 0;margin-top:-24px;z-index:1;}
+  .dark-glow{position:absolute;top:-120px;right:-100px;width:560px;height:560px;background:radial-gradient(circle,rgba(0,18,214,0.18),transparent 70%);filter:blur(10px);pointer-events:none;}
+
+  .testimonial{padding:110px 0 70px;position:relative;z-index:1;text-align:center;}
+  .testimonial .wrap{max-width:760px;}
+  .quote-mark{font-family:var(--font-display);font-size:40px;color:rgba(247,246,243,.2);line-height:1;margin-bottom:8px;}
+  .quote{margin:0;}
+  .quote p{font-family:var(--font-display);font-weight:500;font-size:clamp(24px,3.4vw,38px);line-height:1.35;letter-spacing:-0.025em;margin:0 auto;}
+  .quote cite{display:block;margin-top:26px;font-size:13px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,.6);font-style:normal;}
+  .quote cite span{display:block;margin-top:4px;font-weight:300;text-transform:none;letter-spacing:0;font-size:12px;color:rgba(247,246,243,.4);}
+
+  .contact{padding:60px 0 0;position:relative;z-index:1;}
+  .contact-eyebrow{font-size:12px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,246,243,.4);margin-bottom:22px;}
+  .mailbtn{font-family:var(--font-display);font-weight:600;font-size:clamp(38px,8vw,110px);letter-spacing:-0.03em;line-height:1;background:none;border:none;color:var(--on-dark);cursor:pointer;padding:0;position:relative;display:inline-block;text-align:left;}
+  .mailbtn .underline{position:absolute;left:0;bottom:-6px;width:0;height:3px;background:var(--accent);transition:width .45s cubic-bezier(.22,.61,.36,1);}
+  .mailbtn:hover .underline,.mailbtn:focus-visible .underline{width:100%;}
+  .mailbtn:hover,.mailbtn:focus-visible{color:var(--accent);}
+  .copy-hint{margin-top:20px;font-size:13px;font-weight:300;color:rgba(247,246,243,.4);letter-spacing:0.02em;}
+  .copy-hint.copied{color:var(--good);}
+
+  .foot{display:grid;grid-template-columns:1fr;gap:36px;border-top:1px solid rgba(247,246,243,.1);margin-top:80px;padding:44px 0 40px;font-size:13px;font-weight:300;color:rgba(247,246,243,.5);}
+  .foot-col-title{color:var(--on-dark);font-weight:500;letter-spacing:-0.01em;margin-bottom:14px;font-size:14px;}
+  .foot-links{list-style:none;display:flex;flex-direction:column;gap:10px;}
+  .foot-links a{display:inline-flex;align-items:center;gap:6px;transition:color .3s ease;}
+  .foot-links a:hover{color:var(--on-dark);}
+  .foot-links a .go{font-size:11px;transition:transform .3s ease;}
+  .foot-links a:hover .go{transform:translate(2px,-2px);}
+  .foot-meta{line-height:1.7;}
+  .foot-copy{display:flex;flex-direction:column;gap:4px;}
+
+  @media (min-width:720px){
+    .foot{grid-template-columns:repeat(3,1fr);align-items:start;}
+    .foot-copy{text-align:right;}
+  }
+
+  @media (max-width:720px){
+    .wrap{padding:0 22px;}
+    .hero{padding:72px 0 64px;}
+    .card{padding:28px 24px;border-radius:22px;}
+    .card-body{grid-template-columns:1fr;gap:18px;}
+    .card-arrow{opacity:.35;transform:none;}
+    .card:hover .card-arrow,.card:focus-visible .card-arrow{opacity:1;}
+    .metric{text-align:left;}
+    .metric .lbl{margin-left:0;}
+    .nav-links a.hide-sm{display:none;}
+    .dark-block{border-radius:28px 28px 0 0;margin-top:-16px;}
+    .testimonial{padding:80px 0 56px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;}
+    .rise{opacity:1;transform:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<a href="#work" class="skip-link">Skip to content</a>
+
+<nav class="nav" aria-label="Primary">
+  <div class="wrap">
+    <a href="#top" class="brand">Hadas Kalfa</a>
+    <div class="nav-links">
+      <a href="#work">Projects</a>
+      <a href="#about" class="hide-sm">About</a>
+      <a href="#contact" class="cta">Contact Me</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="wrap">
+    <span class="eyebrow rise d1"><span class="dot" aria-hidden="true"></span>Hadas Kalfa — Product Designer, open to roles</span>
+    <h1 class="headline rise d2">I design products people <span class="accent">come back to.</span></h1>
+    <p class="subline rise d3"><b>Hadas Kalfa, Product Designer UI/UX.</b><br>Product design has always been more than just a job — it's my passion.</p>
+    <div class="meta rise d4">
+      <span>Israel · available remotely</span>
+      <span>Product &amp; systems design</span>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="section" id="work">
+  <div class="wrap">
+    <div class="sec-label">selected work</div>
+    <ul class="work">
+
+      <li><a class="card" href="#">
+        <div class="card-head">
+          <span class="card-idx">01</span>
+          <span class="card-arrow" aria-hidden="true">↗</span>
+        </div>
+        <div class="card-body">
+          <div>
+            <h3 class="card-title">Remember</h3>
+            <p class="card-kicker">B2C digital memorial platform</p>
+            <p class="card-desc">Turned a cold, confusing memorial form into an intuitive space families can lean on during their hardest days.</p>
+            <div class="tags"><span class="tag">consumer</span><span class="tag">emotional design</span></div>
+          </div>
+          <div class="metric"><div class="num">40%</div><div class="lbl">thanks to building a Design System</div></div>
+        </div>
+      </a></li>
+
+      <li><a class="card" href="#">
+        <div class="card-head">
+          <span class="card-idx">02</span>
+          <span class="card-arrow" aria-hidden="true">↗</span>
+        </div>
+        <div class="card-body">
+          <div>
+            <h3 class="card-title">Zoom</h3>
+            <p class="card-kicker">Meeting Start Notifications</p>
+            <p class="card-desc">Real-time alerts that notify users the instant a meeting starts — eliminating the need to manually check screens every few minutes.</p>
+            <div class="tags"><span class="tag">enterprise</span><span class="tag">real-time system</span></div>
+          </div>
+          <div class="metric phrase"><div class="num">1 Screen</div><div class="lbl">&gt; Control Over 4 Devices</div></div>
+        </div>
+      </a></li>
+
+      <li><a class="card" href="#">
+        <div class="card-head">
+          <span class="card-idx">03</span>
+          <span class="card-arrow" aria-hidden="true">↗</span>
+        </div>
+        <div class="card-body">
+          <div>
+            <h3 class="card-title">HCM Teacher Payroll</h3>
+            <p class="card-kicker">Errors Before the Payslip</p>
+            <p class="card-desc">Redesigned how teacher salaries are calculated and paid — catching payroll errors before they ever reach the payslip. Only critical alerts block payment.</p>
+            <div class="tags"><span class="tag">enterprise</span><span class="tag">redesign</span></div>
+          </div>
+          <div class="metric"><div class="num">95%</div><div class="lbl">Frictionless Case Flow</div></div>
+        </div>
+      </a></li>
+
+    </ul>
+  </div>
+</section>
+
+<section class="expertise section">
+  <div class="wrap">
+    <div class="exp-grid">
+      <div class="exp-head">
+        <div class="sec-label" style="padding:0;">Expertise</div>
+      </div>
+      <ul class="exp-list">
+        <li class="exp-row">
+          <div class="exp-top"><span class="exp-num">01</span><h3 class="exp-title">Product Strategy</h3></div>
+          <p class="exp-desc">Translating ambiguous business goals into a clear design direction with measurable outcomes.</p>
+        </li>
+        <li class="exp-row">
+          <div class="exp-top"><span class="exp-num">02</span><h3 class="exp-title">UX Research</h3></div>
+          <p class="exp-desc">Grounding every decision in real user behavior — not assumptions or trends.</p>
+        </li>
+        <li class="exp-row">
+          <div class="exp-top"><span class="exp-num">03</span><h3 class="exp-title">Interaction &amp; Visual Design</h3></div>
+          <p class="exp-desc">Crafting interfaces that feel inevitable, not decorated.</p>
+        </li>
+        <li class="exp-row">
+          <div class="exp-top"><span class="exp-num">04</span><h3 class="exp-title">Design Systems</h3></div>
+          <p class="exp-desc">Building scalable foundations that keep products consistent as they grow.</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="sec-label">recognized by</div>
+    <div class="strip">
+      <span><b>Zoom</b> · product design</span>
+      <span><b>HCM</b> · enterprise systems</span>
+      <span><b>Behance</b> · featured, UX/UI</span>
+    </div>
+  </div>
+</section>
+
+<div class="dark-block">
+  <div class="dark-glow" aria-hidden="true"></div>
+
+  <section class="testimonial">
+    <div class="wrap">
+      <div class="quote-mark" aria-hidden="true">&ldquo;</div>
+      <blockquote class="quote">
+        <p>Hadas brings deep product thinking, and turns fuzzy problems into simple, effective interfaces.</p>
+        <cite>Product Manager<span>Worked directly with Hadas on shipped features</span></cite>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <p class="contact-eyebrow">Have a project in mind?</p>
+      <button class="mailbtn" id="mail" data-email="hadas@example.com">
+        hadas@example.com
+        <span class="underline" aria-hidden="true"></span>
+      </button>
+      <p class="copy-hint" id="mail-hint">click to copy</p>
+
+      <div class="foot">
+        <div>
+          <p class="foot-col-title">Social</p>
+          <ul class="foot-links">
+            <li><a href="#">Instagram <span class="go" aria-hidden="true">↗</span></a></li>
+            <li><a href="#">Behance <span class="go" aria-hidden="true">↗</span></a></li>
+            <li><a href="#">Dribbble <span class="go" aria-hidden="true">↗</span></a></li>
+            <li><a href="#">LinkedIn <span class="go" aria-hidden="true">↗</span></a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="foot-col-title">Based in</p>
+          <p class="foot-meta">Israel<br>Available remotely</p>
+        </div>
+        <div class="foot-copy">
+          <p>© 2026 Hadas Kalfa</p>
+          <p>Product design, crafted with intent.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</main>
+
+<script>
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  document.querySelectorAll(".hero, .section, .expertise, .testimonial, .contact").forEach(el=>{
+    if(reduce){ el.classList.add("in"); return; }
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} });
+    },{threshold:0.18});
+    io.observe(el);
+  });
+
+  const btn = document.getElementById("mail");
+  const hint = document.getElementById("mail-hint");
+  btn.addEventListener("click", async ()=>{
+    try{ await navigator.clipboard.writeText(btn.dataset.email); }catch(e){}
+    const orig = hint.textContent;
+    hint.textContent = "copied to clipboard";
+    hint.classList.add("copied");
+    setTimeout(()=>{ hint.textContent = orig; hint.classList.remove("copied"); }, 1600);
+  });
+</script>
+</body>
+</html>

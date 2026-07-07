@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Yael Lichtenstein — Senior Product Designer</title>
+<meta name="description" content="Senior product designer. I turn user research into interfaces that move retention, not just pixels." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#F5F3EE;
+    --surface:#FCFBF9;
+    --ink:#17150F;
+    --secondary:#6B675C;
+    --muted:#9A968B;
+    --line:#E4E1D8;
+    --line-strong:#D3CFC4;
+    --accent:#2438E0;
+    --accent-soft:#ECEEFD;
+    --good:#1D7A57;
+    --good-soft:#E4F1EB;
+    --font-display:"Bricolage Grotesque",-apple-system,system-ui,sans-serif;
+    --font-body:"Inter",-apple-system,system-ui,sans-serif;
+    --font-mono:"JetBrains Mono",ui-monospace,monospace;
+    --max:1080px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  a{color:inherit;text-decoration:none;}
+  ::selection{background:var(--accent);color:#fff;}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px;}
+
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 32px;}
+
+  /* nav */
+  .nav{position:sticky;top:0;z-index:50;background:rgba(245,243,238,0.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .brand{font-family:var(--font-display);font-weight:600;font-size:17px;letter-spacing:-0.01em;}
+  .nav-links{display:flex;align-items:center;gap:28px;font-size:14px;color:var(--secondary);}
+  .nav-links a{transition:color .18s ease;}
+  .nav-links a:hover{color:var(--ink);}
+  .nav-links a.cta{color:var(--accent);}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--good);display:inline-block;margin-right:7px;vertical-align:1px;box-shadow:0 0 0 0 rgba(29,122,87,.5);animation:pulse 2.6s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(29,122,87,.45);}70%{box-shadow:0 0 0 6px rgba(29,122,87,0);}100%{box-shadow:0 0 0 0 rgba(29,122,87,0);}}
+
+  /* hero */
+  .hero{padding:120px 0 96px;}
+  .eyebrow{font-family:var(--font-mono);font-size:13px;letter-spacing:0.02em;color:var(--secondary);display:inline-flex;align-items:center;}
+  .headline{font-family:var(--font-display);font-weight:600;font-size:clamp(42px,7vw,88px);line-height:1.02;letter-spacing:-0.035em;margin:26px 0 0;max-width:14ch;}
+  .headline .accent{color:var(--accent);}
+  .subline{font-size:clamp(17px,2.2vw,21px);color:var(--secondary);max-width:34ch;margin-top:28px;line-height:1.5;}
+  .meta{margin-top:34px;font-family:var(--font-mono);font-size:13px;color:var(--muted);display:flex;gap:18px;flex-wrap:wrap;}
+
+  /* reveal animation */
+  .rise{opacity:0;transform:translateY(18px);}
+  .in .rise{opacity:1;transform:none;transition:opacity .7s cubic-bezier(.22,.61,.36,1),transform .7s cubic-bezier(.22,.61,.36,1);}
+  .in .d1{transition-delay:.05s;}.in .d2{transition-delay:.14s;}.in .d3{transition-delay:.23s;}.in .d4{transition-delay:.32s;}
+
+  /* section frame */
+  .section{padding:28px 0;border-top:1px solid var(--line);}
+  .sec-label{font-family:var(--font-mono);font-size:13px;letter-spacing:0.04em;color:var(--muted);padding:20px 0 4px;}
+
+  /* work list */
+  .work{list-style:none;}
+  .row{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:24px;padding:30px 20px;margin:0 -20px;border-radius:16px;transition:background .22s ease,transform .22s ease;position:relative;}
+  .row:hover{background:var(--surface);transform:translateX(4px);box-shadow:0 1px 0 var(--line) inset,0 -1px 0 var(--line) inset;}
+  .row-idx{font-family:var(--font-mono);font-size:13px;color:var(--muted);}
+  .row-title{font-family:var(--font-display);font-weight:500;font-size:clamp(22px,3vw,30px);letter-spacing:-0.02em;line-height:1.1;display:flex;align-items:center;gap:12px;}
+  .arrow{opacity:0;transform:translateX(-6px);transition:opacity .22s ease,transform .22s ease;color:var(--accent);font-size:20px;}
+  .row:hover .arrow{opacity:1;transform:none;}
+  .row-desc{color:var(--secondary);font-size:16px;margin-top:8px;max-width:46ch;}
+  .tags{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+  .tag{font-family:var(--font-mono);font-size:12px;color:var(--secondary);border:1px solid var(--line-strong);border-radius:20px;padding:3px 11px;}
+  .metric{text-align:right;min-width:120px;}
+  .metric .num{font-family:var(--font-mono);font-weight:500;font-size:clamp(30px,4vw,44px);letter-spacing:-0.02em;line-height:1;transition:color .22s ease;font-variant-numeric:tabular-nums;}
+  .row:hover .metric .num{color:var(--accent);}
+  .metric .lbl{font-family:var(--font-mono);font-size:12px;color:var(--muted);margin-top:8px;}
+
+  /* recognition strip */
+  .strip{display:flex;flex-wrap:wrap;gap:12px 30px;padding:26px 0 34px;font-family:var(--font-mono);font-size:13px;color:var(--secondary);}
+  .strip b{font-weight:500;color:var(--ink);}
+
+  /* quote */
+  .quote{padding:56px 0;}
+  .quote p{font-family:var(--font-display);font-weight:400;font-size:clamp(24px,3.4vw,36px);line-height:1.28;letter-spacing:-0.02em;max-width:22ch;}
+  .quote cite{display:block;margin-top:22px;font-family:var(--font-mono);font-size:13px;color:var(--muted);font-style:normal;}
+
+  /* contact */
+  .contact{padding:80px 0 40px;border-top:1px solid var(--line);}
+  .contact h2{font-family:var(--font-display);font-weight:600;font-size:clamp(30px,5vw,56px);letter-spacing:-0.03em;line-height:1.05;max-width:16ch;}
+  .mailbtn{margin-top:32px;display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:15px;background:var(--ink);color:var(--paper);border:none;border-radius:12px;padding:14px 20px;cursor:pointer;transition:transform .16s ease,background .2s ease;}
+  .mailbtn:hover{transform:translateY(-1px);}
+  .mailbtn:active{transform:translateY(0) scale(.99);}
+  .mailbtn.copied{background:var(--good);}
+  .foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;padding:48px 0 40px;font-family:var(--font-mono);font-size:13px;color:var(--muted);}
+  .foot a{transition:color .18s ease;}
+  .foot a:hover{color:var(--ink);}
+  .socials{display:flex;gap:20px;}
+
+  @media (max-width:720px){
+    .wrap{padding:0 22px;}
+    .hero{padding:80px 0 64px;}
+    .row{grid-template-columns:1fr;gap:14px;padding:26px 18px;margin:0 -18px;}
+    .row-idx{display:none;}
+    .metric{text-align:left;}
+    .nav-links a.hide-sm{display:none;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;}
+    .rise{opacity:1;transform:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a href="#top" class="brand">Yael Lichtenstein</a>
+    <div class="nav-links">
+      <a href="#work">work</a>
+      <a href="#about" class="hide-sm">about</a>
+      <a href="#contact" class="cta">contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <span class="eyebrow rise d1"><span class="dot"></span>Senior Product Designer — open to roles</span>
+    <h1 class="headline rise d2">I design products people <span class="accent">come back to.</span></h1>
+    <p class="subline rise d3">I turn user research into interfaces that move retention — not just pixels.</p>
+    <div class="meta rise d4">
+      <span>Tel Aviv · available remotely</span>
+      <span>7+ years · product &amp; systems</span>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="section" id="work">
+  <div class="wrap">
+    <div class="sec-label">selected work</div>
+    <ul class="work">
+
+      <li><a class="row" href="#">
+        <span class="row-idx">01</span>
+        <div>
+          <div class="row-title">Taboola — Lock Screen Hub <span class="arrow" aria-hidden="true">→</span></div>
+          <p class="row-desc">Reframed a "random feed" into a time-of-day content hub people actually return to.</p>
+          <div class="tags"><span class="tag">product design</span><span class="tag">user research</span></div>
+        </div>
+        <div class="metric"><div class="num" data-to="18" data-prefix="+" data-suffix="%">+0%</div><div class="lbl">retention</div></div>
+      </a></li>
+
+      <li><a class="row" href="#">
+        <span class="row-idx">02</span>
+        <div>
+          <div class="row-title">STAM Scanner <span class="arrow" aria-hidden="true">→</span></div>
+          <p class="row-desc">Brought a 3,000-year-old proofreading craft onto any device — accurate, on demand.</p>
+          <div class="tags"><span class="tag">0 → 1 system</span><span class="tag">design system</span></div>
+        </div>
+        <div class="metric"><div class="num" data-to="60" data-prefix="−" data-suffix="%">−0%</div><div class="lbl">review time</div></div>
+      </a></li>
+
+      <li><a class="row" href="#">
+        <span class="row-idx">03</span>
+        <div>
+          <div class="row-title">Ezer Mizion CRM <span class="arrow" aria-hidden="true">→</span></div>
+          <p class="row-desc">Tamed a flooded legacy data system into a clear, scannable dashboard.</p>
+          <div class="tags"><span class="tag">enterprise</span><span class="tag">redesign</span></div>
+        </div>
+        <div class="metric"><div class="num" data-to="40" data-prefix="−" data-suffix="%">−0%</div><div class="lbl">task time</div></div>
+      </a></li>
+
+    </ul>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="sec-label">recognized by</div>
+    <div class="strip">
+      <span><b>Taboola</b> · product design</span>
+      <span><b>Ezer Mizion</b> · internal systems</span>
+      <span><b>Behance</b> · featured, UX/UI</span>
+      <span><b>ADPList</b> · design mentor</span>
+    </div>
+  </div>
+</section>
+
+<section class="quote">
+  <div class="wrap">
+    <p>"She brings deep product thinking, and turns fuzzy problems into simple, effective interfaces."</p>
+    <cite>Product Manager · Taboola</cite>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <h2>Let's build something people return to.</h2>
+    <button class="mailbtn" id="mail" data-email="yael@example.com">
+      <span id="mail-text">yael@example.com</span>
+      <span aria-hidden="true">⧉</span>
+    </button>
+    <div class="foot">
+      <span>© 2026 Yael Lichtenstein</span>
+      <div class="socials">
+        <a href="#">LinkedIn</a>
+        <a href="#">Behance</a>
+        <a href="#">Dribbble</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  document.querySelectorAll(".hero, .section, .quote, .contact").forEach(el=>{
+    if(reduce){ el.classList.add("in"); return; }
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} });
+    },{threshold:0.18});
+    io.observe(el);
+  });
+
+  function countUp(el){
+    const to = parseInt(el.dataset.to,10);
+    const pre = el.dataset.prefix||"", suf = el.dataset.suffix||"";
+    if(reduce){ el.textContent = pre+to+suf; return; }
+    const dur = 1100; const start = performance.now();
+    function tick(now){
+      const p = Math.min((now-start)/dur,1);
+      const eased = 1-Math.pow(1-p,3);
+      el.textContent = pre+Math.round(to*eased)+suf;
+      if(p<1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  const numIO = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ countUp(e.target); numIO.unobserve(e.target);} });
+  },{threshold:0.6});
+  document.querySelectorAll(".metric .num").forEach(n=>numIO.observe(n));
+
+  const btn = document.getElementById("mail");
+  const txt = document.getElementById("mail-text");
+  btn.addEventListener("click", async ()=>{
+    try{ await navigator.clipboard.writeText(btn.dataset.email); }catch(e){}
+    const orig = txt.textContent;
+    txt.textContent = "copied to clipboard";
+    btn.classList.add("copied");
+    setTimeout(()=>{ txt.textContent = orig; btn.classList.remove("copied"); }, 1600);
+  });
+</script>
+</body>
+</html>
