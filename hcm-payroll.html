@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Payments System — HCM Teacher Payroll Case Study by Hadas Kalfa</title>
+<meta name="description" content="Redesigning the system that calculates and pays over 100,000 teachers' salaries every month — catching payroll errors before they ever reach the payslip." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#F7F6F3;
+    --surface:#FFFFFF;
+    --ink:#1D1D1F;
+    --secondary:#5B5A57;
+    --muted:#9A968B;
+    --line:#E4E1D8;
+    --line-strong:#D3CFC4;
+    --accent:#0012D6;
+    --accent-soft:#E7E9FB;
+    --good:#1D7A57;
+    --warn:#B5560A;
+    --crit:#B3261E;
+    --on-dark:#F7F6F3;
+    --on-dark-muted:rgba(247,246,243,.56);
+    --on-dark-line:rgba(247,246,243,.14);
+    --near-black:#0F0F0F;
+    --font-display:"Bricolage Grotesque",-apple-system,system-ui,sans-serif;
+    --font-body:"Poppins",-apple-system,system-ui,sans-serif;
+    --max:1280px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-weight:400;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  ::selection{background:var(--accent);color:#fff;}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px;}
+
+  @media (pointer:fine){
+    body{cursor:none;}
+    #custom-cursor{position:fixed;top:0;left:0;width:3.2px;height:3.2px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .3s cubic-bezier(.16,1,.3,1),height .3s cubic-bezier(.16,1,.3,1),background .3s ease,border-color .3s ease;}
+    #custom-cursor.hovering{width:56px;height:56px;background:transparent;border:1px solid var(--accent);}
+  }
+  @media (pointer:coarse){ #custom-cursor{display:none;} }
+  @media (pointer:fine){ a,button{cursor:none;} }
+
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 32px;}
+
+  .nav{position:sticky;top:0;z-index:50;background:rgba(247,246,243,0.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;}
+  .brand{font-family:var(--font-display);font-weight:600;font-size:18px;letter-spacing:-0.01em;}
+  .nav-links{display:flex;align-items:center;gap:32px;font-size:15px;font-weight:500;color:var(--secondary);}
+  .nav-links a{transition:color .18s ease;}
+  .nav-links a:hover{color:var(--ink);}
+  .back-link{display:inline-flex;align-items:center;gap:8px;}
+  .back-link .arrow{transition:transform .25s cubic-bezier(.22,.61,.36,1);}
+  .back-link:hover .arrow{transform:translateX(-4px);}
+
+  .rise{opacity:0;transform:translateY(18px);}
+  .in .rise{opacity:1;transform:none;transition:opacity .7s cubic-bezier(.22,.61,.36,1),transform .7s cubic-bezier(.22,.61,.36,1);}
+  .in .d1{transition-delay:.05s;}.in .d2{transition-delay:.14s;}.in .d3{transition-delay:.23s;}
+
+  /* hero */
+  .cs-hero{padding:72px 0 64px;}
+  .cs-eyebrow{font-size:14px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);}
+  .cs-title{font-family:var(--font-display);font-weight:600;font-size:clamp(40px,7vw,104px);line-height:0.98;letter-spacing:-0.04em;margin-top:20px;max-width:17ch;}
+  .cs-sub{font-family:var(--font-display);font-weight:500;font-size:clamp(19px,2.2vw,26px);color:var(--secondary);margin-top:20px;letter-spacing:-0.015em;line-height:1.4;max-width:34ch;}
+  .hero-top{display:flex;flex-direction:column;gap:32px;}
+  .hero-top-text{max-width:560px;}
+  .hero-top-image img{width:100%;height:auto;border-radius:16px;filter:drop-shadow(0 30px 50px rgba(15,15,15,.22)) drop-shadow(0 8px 16px rgba(15,15,15,.16));}
+  @media (min-width:960px){
+    .hero-top{flex-direction:row;align-items:center;justify-content:space-between;gap:36px;}
+    .hero-top-text{flex:0 1 auto;}
+    .hero-top-image{flex:1 1 auto;max-width:680px;}
+  }
+  .cs-meta{display:flex;flex-wrap:wrap;gap:32px 48px;margin-top:44px;padding-top:32px;border-top:1px solid var(--line);}
+  .cs-meta-item .lbl{font-size:12.5px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);}
+  .cs-meta-item .val{font-size:18px;font-weight:500;color:var(--ink);margin-top:8px;}
+
+  /* section frame */
+  .cs-section{padding:88px 0;border-top:1px solid var(--line);}
+  .cs-section.tight{padding:56px 0;}
+  .cs-label{font-size:14px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:22px;}
+  .cs-statement{font-family:var(--font-display);font-weight:600;font-size:clamp(30px,4vw,48px);letter-spacing:-0.03em;line-height:1.2;max-width:20ch;color:var(--ink);}  .cs-body{font-size:18px;color:var(--secondary);line-height:1.75;max-width:68ch;margin-top:24px;}
+  .cs-body + .cs-body{margin-top:16px;}
+  .cs-grid{display:grid;grid-template-columns:1fr;gap:56px;}
+  @media (min-width:860px){ .cs-grid.cols-2{grid-template-columns:1fr 1fr;} .cs-grid.cols-2-wide{grid-template-columns:0.9fr 1.1fr;} }
+  .subsection{margin-top:72px;}
+  .subsection:first-child{margin-top:0;}
+  .subsection h3{font-family:var(--font-display);font-weight:600;font-size:clamp(28px,3.4vw,40px);line-height:1.25;letter-spacing:-0.025em;margin-bottom:26px;}
+
+  /* crisis stats bar */
+  .crisis-row{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:20px;overflow:hidden;margin-top:48px;}
+  @media (min-width:760px){ .crisis-row{grid-template-columns:repeat(4,1fr);} }
+  .crisis-item{background:var(--surface);padding:28px 24px;}
+  .crisis-num{font-family:var(--font-display);font-weight:600;font-size:clamp(30px,3.4vw,40px);color:var(--crit);letter-spacing:-0.02em;}
+  .crisis-lbl{font-size:14px;color:var(--secondary);margin-top:10px;line-height:1.5;}
+  .crisis-src{font-size:12px;color:var(--muted);margin-top:12px;text-transform:uppercase;letter-spacing:0.04em;}
+
+  /* media */
+  .media{display:flex;justify-content:center;}
+  .media img{max-width:min(860px,100%);height:auto;display:block;border-radius:10px;filter:drop-shadow(0 24px 32px rgba(29,29,31,0.22)) drop-shadow(0 8px 12px rgba(29,29,31,0.16));}
+  .media.flat img{border-radius:14px;filter:drop-shadow(0 20px 30px rgba(29,29,31,0.18)) drop-shadow(0 6px 10px rgba(29,29,31,0.14));}
+  .media.breakout{width:100vw;max-width:1400px;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);}
+  .media.breakout img{max-width:min(1100px,100%);}
+  .media-row{display:flex;flex-direction:column;gap:40px;align-items:center;}
+  @media (min-width:860px){ .media-row.two{flex-direction:row;align-items:flex-start;} .media-row.two .media{flex:1;} }
+  .media-cap{font-size:14px;color:var(--secondary);text-align:center;max-width:60ch;margin:16px auto 0;line-height:1.6;}
+
+  /* before/after comparison */
+  .compare{display:grid;grid-template-columns:1fr;gap:32px;margin-top:36px;}
+  @media (min-width:860px){ .compare{grid-template-columns:1fr 1fr;} }
+  .compare-col{border-radius:20px;padding:28px;border:1px solid var(--line);}
+  .compare-col.before{background:#FBF4F2;border-color:#F0DCD6;}
+  .compare-col.after{background:var(--accent-soft);border-color:#CBD1F5;}
+  .compare-tag{font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;}
+  .compare-col.before .compare-tag{color:var(--crit);}
+  .compare-col.after .compare-tag{color:var(--accent);}
+  .compare-title{font-family:var(--font-display);font-weight:600;font-size:19px;margin-top:12px;color:var(--ink);}
+  .compare-desc{font-size:14.5px;color:var(--secondary);margin-top:10px;line-height:1.6;}
+  .compare-col .media{margin-top:20px;}
+
+  /* legend */
+  .legend{display:flex;flex-wrap:wrap;gap:12px 24px;margin-top:24px;}
+  .legend-item{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--secondary);}
+  .legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+  /* persona cards */
+  .persona-grid{display:grid;grid-template-columns:1fr;gap:28px;margin-top:40px;}
+  @media (min-width:860px){ .persona-grid{grid-template-columns:repeat(3,1fr);} }
+  .persona-card{border:1px solid var(--line);border-radius:24px;padding:32px;background:var(--surface);display:flex;flex-direction:column;}
+  .persona-tag{font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);}
+  .persona-card.primary{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);}
+  .persona-name{font-family:var(--font-display);font-weight:600;font-size:24px;margin-top:14px;letter-spacing:-0.01em;}
+  .persona-role{font-size:13.5px;color:var(--muted);margin-top:6px;}
+  .persona-comfort{font-size:12.5px;color:var(--secondary);margin-top:12px;padding-top:12px;border-top:1px solid var(--line);}
+  .persona-bio{font-size:14px;color:var(--secondary);line-height:1.65;margin-top:14px;}
+  .persona-need{margin-top:18px;padding-top:18px;border-top:1px solid var(--line);font-size:14px;color:var(--ink);font-weight:500;line-height:1.5;}
+
+  /* journey table */
+  .journey-scroll{overflow-x:auto;margin-top:40px;padding-bottom:8px;}
+  .journey-table{display:grid;grid-auto-flow:column;grid-auto-columns:230px;gap:16px;}
+  .journey-cell{border:1px solid var(--line);border-radius:18px;padding:22px;background:var(--surface);display:flex;flex-direction:column;gap:10px;}
+  .journey-cell .jnum{font-family:var(--font-display);font-weight:600;font-size:13px;color:var(--muted);}
+  .journey-cell h4{font-family:var(--font-display);font-weight:600;font-size:17px;color:var(--ink);}
+  .journey-cell .jquote{font-size:13px;font-style:normal;color:var(--accent);font-weight:500;}
+  .journey-cell .jaction{font-size:13.5px;color:var(--secondary);line-height:1.5;}
+  .journey-cell .jbefore{font-size:12.5px;color:var(--crit);line-height:1.5;padding-top:10px;border-top:1px solid var(--line);}
+  .journey-cell .jafter{font-size:12.5px;color:var(--good);line-height:1.5;}
+  .journey-cell .jscreen{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;margin-top:auto;padding-top:10px;}
+
+  /* stats / KPI */
+  .stats-row{display:grid;grid-template-columns:1fr;gap:40px;margin-top:48px;}
+  @media (min-width:640px){ .stats-row{grid-template-columns:repeat(3,1fr);} }
+  .stat{border-top:1px solid var(--line-strong);padding-top:24px;}
+  .stat-num{font-family:var(--font-display);font-weight:600;font-size:clamp(40px,5vw,60px);color:var(--accent);letter-spacing:-0.02em;font-variant-numeric:tabular-nums;}
+  .stat-delta{font-size:13px;font-weight:600;color:var(--good);margin-top:4px;}
+  .stat-lbl{font-size:14.5px;color:var(--secondary);margin-top:10px;max-width:26ch;line-height:1.5;}
+  .stat-before{font-size:12px;color:var(--muted);margin-top:8px;}
+
+  /* numbered spec list */
+  .spec-list{list-style:none;display:flex;flex-direction:column;gap:28px;}
+  .spec-list li{display:flex;gap:20px;align-items:flex-start;}
+  .spec-num{flex-shrink:0;width:38px;height:38px;border-radius:50%;border:1px solid var(--line-strong);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;font-size:14px;color:var(--accent);}
+  .spec-list h4{font-size:17px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+  .spec-list p{font-size:15px;color:var(--secondary);line-height:1.6;}
+
+  /* trade-off cards */
+  .tradeoff-grid{display:grid;grid-template-columns:1fr;gap:24px;margin-top:40px;}
+  @media (min-width:760px){ .tradeoff-grid{grid-template-columns:1fr 1fr;} }
+  .tradeoff-card{border:1px solid var(--line);border-radius:22px;padding:30px;background:var(--surface);}
+  .tradeoff-num{font-family:var(--font-display);font-weight:600;font-size:13px;color:var(--muted);}
+  .tradeoff-title{font-family:var(--font-display);font-weight:600;font-size:21px;margin-top:10px;margin-bottom:20px;color:var(--ink);}
+  .tradeoff-row{padding:12px 0;border-top:1px solid var(--line);}
+  .tradeoff-row:first-of-type{border-top:none;}
+  .tradeoff-row .trlbl{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);}
+  .tradeoff-row.rejected .trlbl{color:var(--crit);}
+  .tradeoff-row.chose .trlbl{color:var(--good);}
+  .tradeoff-row p{font-size:14px;color:var(--secondary);margin-top:6px;line-height:1.55;}
+  .tradeoff-row.chose p{color:var(--ink);font-weight:500;}
+
+  /* flow diagram */
+  .flow{margin-top:48px;display:flex;flex-direction:column;align-items:center;}
+  .flow-step{width:100%;max-width:420px;border:1px solid var(--line-strong);border-radius:16px;padding:18px 22px;background:var(--surface);text-align:center;}
+  .flow-step h5{font-family:var(--font-display);font-weight:600;font-size:16px;color:var(--ink);}
+  .flow-step p{font-size:12.5px;color:var(--secondary);margin-top:4px;}
+  .flow-arrow{width:1px;height:28px;background:var(--line-strong);}
+  .flow-branch{display:flex;flex-direction:column;gap:16px;width:100%;max-width:920px;margin:0 auto;}
+  @media (min-width:760px){ .flow-branch{flex-direction:row;} }
+  .flow-branch-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;border-radius:18px;}
+  .flow-branch-col.clean{background:var(--accent-soft);}
+  .flow-branch-col.alert{background:#FBF4F2;}
+  .flow-branch-tag{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--secondary);margin-bottom:4px;}
+  .flow-branch-col .flow-step{max-width:100%;}
+  .flow-merge{font-size:13px;color:var(--secondary);text-align:center;margin:8px 0;}
+  .flow-final{background:var(--near-black);color:var(--on-dark);border:none;}
+  .flow-final h5{color:var(--on-dark);}
+  .flow-final p{color:var(--on-dark-muted);}
+
+  /* dark panel */
+  .cs-dark-panel{border-radius:28px;background:var(--near-black);color:var(--on-dark);padding:88px 48px;text-align:center;}
+  .cs-dark-panel .quote-mark{font-family:var(--font-display);font-size:40px;color:rgba(247,246,243,.28);}
+  .cs-dark-panel p{font-family:var(--font-display);font-weight:500;font-size:clamp(24px,3.2vw,38px);line-height:1.4;letter-spacing:-0.02em;max-width:32ch;margin:20px auto 0;}
+
+  .cta-btn{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;font-weight:500;font-size:16px;border-radius:999px;padding:17px 32px;margin-top:36px;transition:transform .3s cubic-bezier(.22,.61,.36,1),box-shadow .3s ease;}
+  .cta-btn:hover{transform:translateY(-3px);box-shadow:0 16px 32px -12px rgba(0,18,214,0.4);}
+
+  .next-panel{background:var(--near-black);color:var(--on-dark);border-radius:28px;padding:76px 52px;display:flex;flex-direction:column;gap:20px;align-items:flex-start;}
+  .next-panel .lbl{font-size:14px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--on-dark-muted);}
+  .next-panel h3{font-family:var(--font-display);font-weight:600;font-size:clamp(36px,5.4vw,64px);line-height:1.1;letter-spacing:-0.035em;}
+  .next-panel .go-link{display:inline-flex;align-items:center;gap:10px;font-size:16px;font-weight:500;color:var(--on-dark);border:1px solid var(--on-dark-line);border-radius:999px;padding:13px 23px;transition:border-color .3s ease,color .3s ease;}
+  .next-panel .go-link:hover{border-color:var(--accent);color:var(--accent);}
+
+  @media (max-width:720px){
+    .wrap{padding:0 22px;}
+    .cs-hero{padding:44px 0 40px;}
+    .cs-section{padding:52px 0;}
+    .persona-card{padding:24px;}
+    .cs-dark-panel{padding:52px 24px;}
+    .next-panel{padding:44px 26px;}
+    .tradeoff-card{padding:22px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;}
+    .rise{opacity:1;transform:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<div id="custom-cursor" aria-hidden="true"></div>
+
+<nav class="nav" aria-label="Primary">
+  <div class="wrap">
+    <a href="index.html" class="brand">Hadas Kalfa</a>
+    <div class="nav-links">
+      <a href="index.html#work" class="back-link"><span class="arrow" aria-hidden="true">←</span> All Projects</a>
+      <a href="index.html#contact">Contact Me</a>
+    </div>
+  </div>
+</nav>
+
+<header class="cs-hero in">
+  <div class="wrap">
+    <div class="hero-top">
+      <div class="hero-top-text">
+        <span class="cs-eyebrow rise d1">Case Study · HCM Teacher Payroll</span>
+        <h1 class="cs-title rise d2">Payments System</h1>
+        <p class="cs-sub rise d2">A redesign of the system that calculates and pays teachers&rsquo; salaries — one that prevents the error before it reaches the teacher&rsquo;s payslip. From now on, payslips without errors.</p>
+      </div>
+      <div class="hero-top-image rise d3">
+        <img src="מסכים מערכת תשלומים/מסך 2.png" alt="Payroll-run dashboard preview" loading="eager">
+      </div>
+    </div>
+
+    <div class="cs-meta rise d3">
+      <div class="cs-meta-item"><div class="lbl">Role</div><div class="val">UI/UX Product Designer</div></div>
+      <div class="cs-meta-item"><div class="lbl">Type</div><div class="val">End-to-end</div></div>
+      <div class="cs-meta-item"><div class="lbl">Domain</div><div class="val">HCM (Human Capital Management)</div></div>
+    </div>
+
+    <div class="crisis-row rise d3">
+      <div class="crisis-item"><div class="crisis-num">500+</div><div class="crisis-lbl">teachers protested outside the ministry</div><div class="crisis-src">Haaretz · ynet</div></div>
+      <div class="crisis-item"><div class="crisis-num">20 yrs</div><div class="crisis-lbl">recurring pay problems — officially acknowledged</div><div class="crisis-src">Minister of Education</div></div>
+      <div class="crisis-item"><div class="crisis-num">11K</div><div class="crisis-lbl">teachers without a training fund due to errors</div><div class="crisis-src">State Comptroller&rsquo;s report</div></div>
+      <div class="crisis-item"><div class="crisis-num">100K+</div><div class="crisis-lbl">teacher payslips run every month</div><div class="crisis-src">paywatch.co.il</div></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="cs-section in">
+    <div class="wrap">
+      <div class="cs-label">Success Metrics</div>
+      <p class="cs-statement">Goals &amp; KPIs</p>
+      <p class="cs-body">Replacing an old system that relies on the user to notice the problem. From now on, releasing a payment must pass through an active control gate: if a discrepancy is detected, the system blocks the action until a reasoned manual approval is given. The new system won&rsquo;t let you miss the problem — clear, structured design, and clarity with no questions.</p>
+      <p class="cs-body" style="font-size:15px;">The success metrics I defined — the numbers I&rsquo;ll measure after launch, that now explain to the CEO why it will worth the investment.</p>
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-num num" data-target="75" data-suffix="%">75%</div>
+          <div class="stat-delta">↓ from 6 months to 6 weeks</div>
+          <div class="stat-lbl">New-clerk training time</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num num" data-target="85" data-suffix="%">85%</div>
+          <div class="stat-delta">↑ 8.5× · before: ~10%</div>
+          <div class="stat-lbl">Errors caught before payment</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num num" data-target="38" data-suffix="%" data-prefix="−">−38%</div>
+          <div class="stat-delta">within 6 months</div>
+          <div class="stat-lbl">Repeat teacher inquiries</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num num" data-target="97" data-suffix="%">97%</div>
+          <div class="stat-delta">30 sec · before: 15–30 min, 4 screens</div>
+          <div class="stat-lbl">Faster to reconstruct a calculation</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" style="font-family:var(--font-display);font-weight:600;font-size:clamp(40px,5vw,60px);color:var(--accent);letter-spacing:-0.02em;">1:35</div>
+          <div class="stat-delta">efficient · tracked in the run dashboard</div>
+          <div class="stat-lbl">Avg. time to approve a teacher</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" style="font-family:var(--font-display);font-weight:600;font-size:clamp(40px,5vw,60px);color:var(--accent);letter-spacing:-0.02em;">+42</div>
+          <div class="stat-delta">from −18 · reactive → proactive</div>
+          <div class="stat-lbl">Satisfaction (NPS)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section in">
+    <div class="wrap">
+      <div class="cs-label">This is what the moment the error goes to the bank looks like</div>
+      <p class="cs-body" style="margin-top:0;">28 fields on one screen, cryptic error codes, and an &ldquo;Approve&rdquo; button that&rsquo;s the most prominent thing on screen — with no block at all. Reconstructed from public documentation.</p>
+      <div class="media flat breakout" style="margin-top:40px;">
+        <img src="מסכים מערכת תשלומים/מסך 1.png" alt="The legacy MT&quot;M payroll screen — a dense table of 28 fields, cryptic error codes, and a prominent unguarded Approve button" loading="eager">
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section in">
+    <div class="wrap cs-grid cols-2-wide">
+      <div>
+        <div class="cs-label">Problem Framing</div>
+        <p class="cs-statement">Not a calculation problem. An interface problem.</p>
+      </div>
+      <div>
+        <p class="cs-body" style="margin-top:0;">The MT&quot;M system calculates brilliantly. What it doesn&rsquo;t do is alert. The approval point sits after the calculation, with no chance to catch a problem in time. The old system relies on the user to notice the problem; a payment can go out even when the data is wrong — because nothing stops the process and forces a human check before the money leaves. This is a structural failure in the workflow, not a one-off glitch you can fix with a patch. So the error reaches the teacher&rsquo;s bank before any human has seen it.</p>
+        <div class="cs-grid cols-2" style="margin-top:32px;gap:28px;">
+          <div>
+            <div class="cs-label" style="margin-bottom:10px;">Root cause — why it happens</div>
+            <p class="cs-body" style="margin-top:0;font-size:15px;">There&rsquo;s no behavioral trigger at the right moment. The clerk sees a final amount with no context and approves — because nothing stops them.</p>
+          </div>
+          <div>
+            <div class="cs-label" style="margin-bottom:10px;">Business impact — how it hurts</div>
+            <p class="cs-body" style="margin-top:0;font-size:15px;">Manual retroactive fixes, the union, headlines, the State Comptroller — and above all, eroded trust in a public system.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section in" id="personas">
+    <div class="wrap">
+      <div class="cs-label">Discovery &amp; Research</div>
+      <p class="cs-statement">Three personas. Three conflicting needs.</p>
+      <p class="cs-body">The three needs pull in opposite directions. Designing for one hurts another — unless you solve it in the architecture. One design decision, made to work for three conflicting personas.</p>
+
+      <div class="persona-grid">
+        <div class="persona-card primary">
+          <div class="persona-tag">Primary · 87% of usage</div>
+          <div class="persona-name">Rachel Cohen, 58</div>
+          <div class="persona-role">Senior budget clerk · Tel Aviv district office · 22 years in role · responsible for 487 teachers</div>
+          <div class="persona-comfort">Tech comfort: medium — fast with the familiar, anxious about change</div>
+          <p class="persona-bio">She started her career with a calculator and paper; moved to MT&quot;M 18 years ago and knows every component code by heart. She doesn&rsquo;t suffer the complexity — she masters it. Her problem is that the screen doesn&rsquo;t distinguish a routine case from a dangerous one. Month-end is a race against the 25th, with a call every few minutes from a teacher who lost pay.</p>
+          <p class="persona-need">Wants less friction — let me approve fast. A clean, quick default.</p>
+        </div>
+        <div class="persona-card">
+          <div class="persona-tag">Oversight · stakeholder / approver</div>
+          <div class="persona-name">Yossi Gabai, 45</div>
+          <div class="persona-role">District manager · responsible for thousands of teachers and dozens of clerks</div>
+          <div class="persona-comfort">Tech comfort: high — a manager, wants summaries</div>
+          <p class="persona-bio">He doesn&rsquo;t dig into calculation details — he wants to know where risk accumulates and when his signature is required. His nightmare is learning about a pay crisis from the newspaper instead of the system, and facing the State Comptroller with no audit trail.</p>
+          <p class="persona-need">Wants oversight and visibility — not details. All the data rolls up into his dashboard.</p>
+        </div>
+        <div class="persona-card">
+          <div class="persona-tag">Secondary · the newcomer</div>
+          <div class="persona-name">Noa Levi, 29</div>
+          <div class="persona-role">Budget clerk · one year in role · in training</div>
+          <div class="persona-comfort">Tech comfort: high — a digital native, but doesn&rsquo;t know the domain</div>
+          <p class="persona-bio">Fast on the computer but lost in the domain. She works by instructions, performs actions she doesn&rsquo;t deeply understand, and depends on Rachel for every question. Her ramp-up time is a real cost — half a year until she&rsquo;s independent.</p>
+          <p class="persona-need">Needs more context — explain it to me. Every component is clickable and reveals a full explanation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section in">
+    <div class="wrap">
+      <div class="cs-label">Overview</div>
+      <p class="cs-body" style="margin-top:0;max-width:70ch;">MT&quot;M is the system in which the salaries of over 100,000 teaching staff in Israel are calculated and approved every month, run by the Ministry of Education. Budget clerks in the district offices review a table of salary components — base, supplements, deductions, retroactive differentials — cross-check them against the school&rsquo;s report, and approve the monthly run that produces the payslip.</p>
+    </div>
+  </section>
+
+  <section class="cs-section in">
+    <div class="wrap">
+      <div class="cs-label">User Journey</div>
+      <p class="cs-statement">A day in Rachel&rsquo;s life — the April payroll run.</p>
+      <div class="journey-scroll">
+        <div class="journey-table">
+          <div class="journey-cell">
+            <div class="jnum">01 · LOGIN</div>
+            <h4>&ldquo;How much is left for me today?&rdquo;</h4>
+            <p class="jaction">Logs in, sees the status of the monthly run.</p>
+            <p class="jbefore">Before: didn&rsquo;t know where the problems were — manual search.</p>
+            <p class="jafter">After: KPIs + &ldquo;run almost ready, 90%.&rdquo;</p>
+            <div class="jscreen">Screen: payroll-run dashboard</div>
+          </div>
+          <div class="journey-cell">
+            <div class="jnum">02 · REVIEW</div>
+            <h4>&ldquo;Is everything OK here?&rdquo;</h4>
+            <p class="jaction">Opens a teacher, reviews the salary components.</p>
+            <p class="jbefore">Before: black box — 4 screens to reconstruct.</p>
+            <p class="jafter">After: clickable component — source, formula, approver.</p>
+            <div class="jscreen">Screen: calculation transparency</div>
+          </div>
+          <div class="journey-cell">
+            <div class="jnum">03 · ANOMALY DETECTION</div>
+            <h4>&ldquo;What&rsquo;s the problem? How critical?&rdquo;</h4>
+            <p class="jaction">System flags the matriculation bonus in red.</p>
+            <p class="jbefore">Before: would&rsquo;ve been paid silently, surfaces at the teacher.</p>
+            <p class="jafter">After: severity + explanation and a suggested action.</p>
+            <div class="jscreen">Screen: critical alert</div>
+          </div>
+          <div class="journey-cell">
+            <div class="jnum">04 · HANDLING</div>
+            <h4>&ldquo;How do I move forward from here?&rdquo;</h4>
+            <p class="jaction">Sends an online approval request to the manager.</p>
+            <p class="jbefore">Before: dead end — no way to route an approval.</p>
+            <p class="jafter">After: routing to the manager + a &ldquo;pending&rdquo; state.</p>
+            <div class="jscreen">Screen: alert handling</div>
+          </div>
+          <div class="journey-cell">
+            <div class="jnum">05 · APPROVAL</div>
+            <h4>&ldquo;Approved? Who signed?&rdquo;</h4>
+            <p class="jaction">The alert is resolved — she approves payment.</p>
+            <p class="jbefore">Before: blind approval, with no four-eyes check.</p>
+            <p class="jafter">After: digital signature + Audit log.</p>
+            <div class="jscreen">Screen: approved requests</div>
+          </div>
+          <div class="journey-cell">
+            <div class="jnum">06 · CLOSING</div>
+            <h4>&ldquo;Done. Next in line.&rdquo;</h4>
+            <p class="jaction">Payment approved, moves on to the next teacher.</p>
+            <p class="jbefore">Before: anxiety that something was missed.</p>
+            <p class="jafter">After: explicit, detailed confirmation + a reference number.</p>
+            <div class="jscreen">Screen: payment confirmation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section in">
+    <div class="wrap">
+      <div class="cs-label">Constraints &amp; Trade-off</div>
+      <p class="cs-statement">What I considered — and rejected.</p>
+      <p class="cs-body">Every decision is a choice between two good things. This is the part that separates &ldquo;I designed a screen&rdquo; from &ldquo;I navigated between conflicting constraints.&rdquo;</p>
+
+      <div class="tradeoff-grid">
+        <div class="tradeoff-card">
+          <div class="tradeoff-num">01</div>
+          <div class="tradeoff-title">Block everything vs. rank the risk</div>
+          <div class="tradeoff-row"><div class="trlbl">Considered</div><p>A blanket block on every anomaly — zero incorrect payslips.</p></div>
+          <div class="tradeoff-row rejected"><div class="trlbl">Rejected</div><p>Rachel handles legitimate anomalies all day → blocking each one breeds workarounds. Worse than today.</p></div>
+          <div class="tradeoff-row chose"><div class="trlbl">Chose</div><p>A severity model: red blocks, orange warns, yellow notes. Only red stops the run.</p></div>
+          <div class="tradeoff-row"><div class="trlbl">Why</div><p>Prevents the catastrophic error without paralyzing the 95% of ordinary cases.</p></div>
+        </div>
+        <div class="tradeoff-card">
+          <div class="tradeoff-num">02</div>
+          <div class="tradeoff-title">Real-time vs. system load</div>
+          <div class="tradeoff-row"><div class="trlbl">Considered</div><p>Live validation on every keystroke against the full set of reform rules.</p></div>
+          <div class="tradeoff-row rejected"><div class="trlbl">Rejected</div><p>The old DB can&rsquo;t take the load; validating every character is theater.</p></div>
+          <div class="tradeoff-row chose"><div class="trlbl">Chose</div><p>Validation on blur + cache, and a full gate at the moment of approval.</p></div>
+          <div class="tradeoff-row"><div class="trlbl">Why</div><p>&ldquo;Real-time the moment the money moves&rdquo; — not everywhere.</p></div>
+        </div>
+        <div class="tradeoff-card">
+          <div class="tradeoff-num">03</div>
+          <div class="tradeoff-title">Familiar vs. modern</div>
+          <div class="tradeoff-row"><div class="trlbl">Considered</div><p>Keep the dense table Rachel knows.</p></div>
+          <div class="tradeoff-row rejected"><div class="trlbl">Rejected</div><p>The dense table is the root cause — keeping it means keeping the failure.</p></div>
+          <div class="tradeoff-row chose"><div class="trlbl">Chose</div><p>A modern layout + a &ldquo;power mode,&rdquo; with the old code as a secondary label.</p></div>
+          <div class="tradeoff-row"><div class="trlbl">Why</div><p>The migration risk — not the design — is the real risk.</p></div>
+        </div>
+        <div class="tradeoff-card">
+          <div class="tradeoff-num">04</div>
+          <div class="tradeoff-title">Transparency vs. cognitive load</div>
+          <div class="tradeoff-row"><div class="trlbl">Considered</div><p>Show every formula inline — maximum transparency.</p></div>
+          <div class="tradeoff-row rejected"><div class="trlbl">Rejected</div><p>That brings back the 28-field overload. Transparency turns into noise.</p></div>
+          <div class="tradeoff-row chose"><div class="trlbl">Chose</div><p>Collapsed by default, revealed on click.</p></div>
+          <div class="tradeoff-row"><div class="trlbl">Why</div><p>Transparency on demand — the screen stays scannable.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section in">
+    <div class="wrap">
+      <div class="cs-label">Flow Map</div>
+      <p class="cs-statement">The journey through the system — from login to secure payment.</p>
+      <p class="cs-body">The core flow is built as a decision tree. Every teacher is checked, and at the validation point the flow forks — a clean path vs. an alert-handling path — both merging into a two-step approval and secure payment.</p>
+
+      <div class="flow">
+        <div class="flow-step"><h5>Login + authentication</h5><p>Identity · 2FA · role selection</p></div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step"><h5>Payroll-run dashboard</h5><p>Run status · handling queue · alerts</p></div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step"><h5>Teacher profile</h5><p>Select a teacher to handle</p></div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step"><h5>Calculation transparency</h5><p>Salary-component breakdown · formulas · references</p></div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step"><h5>Differentials timeline</h5><p>Every differential linked to the event that created it</p></div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step"><h5>Pre-payment review</h5><p>Cross-check against rules, history and approvals</p></div>
+        <div class="flow-arrow"></div>
+
+        <div class="flow-branch">
+          <div class="flow-branch-col clean">
+            <div class="flow-branch-tag">✓ Passed validation</div>
+            <div class="flow-step"><h5>Ready for approval</h5><p>Zero anomalies · green</p></div>
+          </div>
+          <div class="flow-branch-col alert">
+            <div class="flow-branch-tag">⚠ Alert found</div>
+            <div class="flow-step"><h5>Critical alert</h5><p>What&rsquo;s anomalous · why · the impact</p></div>
+            <div class="flow-step"><h5>Resolving the alert</h5><p>Online approval request / document upload</p></div>
+            <div class="flow-step"><h5>Alert resolved</h5><p>Component back to normal</p></div>
+          </div>
+        </div>
+
+        <p class="flow-merge">▼ Both paths merge into the approval process</p>
+        <div class="flow-arrow"></div>
+        <div class="flow-step"><h5>Payment approval · signature 1/2</h5><p>Payroll coordinator approves</p></div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step"><h5>Finance manager approval · signature 2/2</h5><p>Four-eyes control · digital signature</p></div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step flow-final"><h5>✓ Payment approved and released</h5><p>Included in the run · logged in the Audit log</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section in" id="solution">
+    <div class="wrap">
+      <div class="cs-label">Design System</div>
+      <p class="cs-statement">Entry point: knowing where the problem is.</p>
+      <p class="cs-body">Instead of opening a list of 487 teachers and searching, Rachel lands on a dashboard that instantly shows her how much is approved, how much is left, and what&rsquo;s blocking payment — with a direct path to handle it. Every problem in the old system is tied to a specific move in the new interface — and to a real screen that demonstrates it.</p>
+
+      <div class="media" style="margin-top:40px;">
+        <img src="מסכים מערכת תשלומים/מסך 2.png" alt="Payroll-run dashboard — status, handling queue, and alerts for Rachel's 487 teachers" loading="lazy">
+      </div>
+
+      <div class="subsection">
+        <h3>Calculation transparency</h3>
+        <div class="compare">
+          <div class="compare-col before">
+            <div class="compare-tag">Before</div>
+            <div class="compare-title">The clerk sees an amount — not how it was derived</div>
+            <p class="compare-desc">A teacher&rsquo;s question required opening 4 different screens to reconstruct the calculation.</p>
+          </div>
+          <div class="compare-col after">
+            <div class="compare-tag">After</div>
+            <div class="compare-title">Transparent reconstruction in one click</div>
+            <p class="compare-desc">Base-salary breakdown screen. Every component is a clickable card that reveals the data source, the calculation formula and the legal references in one click — so even a new clerk understands every salary component without opening another screen.</p>
+          </div>
+        </div>
+        <div class="media flat" style="margin-top:32px;">
+          <img src="מסכים מערכת תשלומים/מסך 3.png" alt="Base-salary breakdown screen with clickable components revealing source, formula and legal references" loading="lazy">
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Anomaly detection</h3>
+        <div class="compare">
+          <div class="compare-col before">
+            <div class="compare-tag">Before</div>
+            <div class="compare-title">Payment anomalies aren&rsquo;t necessarily detected</div>
+            <p class="compare-desc">No flagging, no ranking — the clerk only notices when a teacher complains, and it surfaces only on the teacher&rsquo;s payslip.</p>
+          </div>
+          <div class="compare-col after">
+            <div class="compare-tag">After</div>
+            <div class="compare-title">An explained alert with an action</div>
+            <p class="compare-desc">Critical-alert screen. The clerk sees what&rsquo;s anomalous, why, and the impact — and two ways to resolve it are offered: upload the required approval, or send the manager an approval request. It gets a resolution path that fixes it before the change is even saved.</p>
+          </div>
+        </div>
+
+        <div class="media" style="margin-top:32px;">
+          <img src="מסכים מערכת תשלומים/מסך 4.png" alt="Critical alert screen for a seniority-grant discrepancy, with explanation and two resolution paths" loading="lazy">
+        </div>
+
+        <h3 style="margin-top:40px;">Alert</h3>
+        <div style="margin-top:0;display:flex;flex-wrap:wrap;align-items:center;gap:40px;">
+          <div style="flex:1 1 380px;max-width:460px;">
+            <p class="cs-body" style="font-size:14.5px;margin-top:0;">Alert urgency is ranked using warning/confirmation colors. Only critical-urgency alerts are flagged red, and only these halt the payment process until resolved. Any other, non-critical alert does not stop the system&rsquo;s flow.</p>
+            <div class="legend" style="margin-top:16px;">
+              <div class="legend-item"><span class="legend-dot" style="background:var(--crit);"></span>Red — critical warning, halts payment</div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--warn);"></span>Orange — update notice</div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--good);"></span>Green — approval or success</div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--accent);"></span>Blue — information</div>
+            </div>
+          </div>
+          <div class="media flat" style="max-width:340px;flex:0 0 auto;"><img src="מסכים מערכת תשלומים/מסך 42.png" alt="Recent activity alerts widget showing status across the clerk's queue" loading="lazy"></div>
+        </div>
+
+        <div class="cs-grid cols-2" style="margin-top:40px;align-items:center;">
+          <div class="media flat"><img src="מסכים מערכת תשלומים/מסך 5.png" alt="Zoomed detail of the critical alert's approval-required explanation panel" loading="lazy"></div>
+          <ul class="spec-list">
+            <li><span class="spec-num">↳</span><div><h4>Why approval is needed</h4><p>The threshold for the seniority grant changed in January 2026, and no matching approval document was found for the current sum. A signed authorization or seniority-freeze approval is required before the payment.</p></div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Resolving the alert</h3>
+        <p class="cs-body" style="margin-top:0;">Right after the explained alert comes an action that resolves it: uploading required documents and sending an approval request — instead of a dead end.</p>
+        <div class="media" style="margin-top:32px;">
+          <img src="מסכים מערכת תשלומים/מסך 6.png" alt="Approval-resolution panel — request remote approval via email, or upload the required document" loading="lazy">
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Differentials timeline</h3>
+        <div class="compare">
+          <div class="compare-col before">
+            <div class="compare-tag">Before</div>
+            <div class="compare-title">&ldquo;₪1,247 differential from 03/25&rdquo; — why?</div>
+            <p class="compare-desc">The system didn&rsquo;t link the differential to the event that created it.</p>
+          </div>
+          <div class="compare-col after">
+            <div class="compare-tag">After</div>
+            <div class="compare-title">Every differential is linked to its own story</div>
+            <p class="compare-desc">A visual timeline: grade change, retroactive recognition, error fix — with the amount and the explanation, so the teacher and the clerk understand exactly why.</p>
+          </div>
+        </div>
+        <div class="media flat" style="margin-top:32px;">
+          <img src="מסכים מערכת תשלומים/מסך 7.png" alt="Differentials timeline — every salary change linked to the event, amount and explanation that created it" loading="lazy">
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Payment approval — final summary</h3>
+        <p class="cs-body" style="margin-top:0;">Once all alerts are resolved, the payment goes through smoothly with zero calculation errors, and the flow closes on an unambiguous confirmation screen. Deposit details, checks and validations, and a full component table — closing the loop with a reference number and follow-up actions.</p>
+        <div class="media-row two" style="margin-top:32px;">
+          <div class="media"><img src="מסכים מערכת תשלומים/מסך 8.png" alt="Payment approval final summary — deposit details, validations and the full salary component table" loading="lazy"></div>
+          <div class="media"><img src="מסכים מערכת תשלומים/מסך 9.png" alt="Payment approved and confirmed — success screen with a reference number and next actions" loading="lazy"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section tight in">
+    <div class="wrap">
+      <div class="cs-dark-panel">
+        <div class="quote-mark" aria-hidden="true">&ldquo;</div>
+        <p>One flow. A whole story. A system that moves the stopping point to before the money moves — through calculation transparency, real-time validation, anomaly ranking and two-step approval.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section tight in">
+    <div class="wrap">
+      <div class="next-panel">
+        <div class="lbl">Keep exploring</div>
+        <h3>Back to all projects</h3>
+        <a class="go-link" href="index.html#work">View more work <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if(window.matchMedia("(pointer: fine)").matches){
+    const cursor = document.getElementById("custom-cursor");
+    document.addEventListener("mousemove", (e)=>{
+      cursor.style.left = e.clientX + "px";
+      cursor.style.top = e.clientY + "px";
+    });
+    document.querySelectorAll("a, button").forEach(el=>{
+      el.addEventListener("mouseenter", ()=>cursor.classList.add("hovering"));
+      el.addEventListener("mouseleave", ()=>cursor.classList.remove("hovering"));
+    });
+  }
+
+  document.querySelectorAll(".stat-num.num").forEach(el=>{
+    const target = parseInt(el.dataset.target, 10);
+    const suffix = el.dataset.suffix || "";
+    const prefix = el.dataset.prefix || "";
+    el.dataset.target = target;
+    el.dataset.suffix = suffix;
+    el.dataset.prefix = prefix;
+  });
+
+  function animateCount(el){
+    const target = parseInt(el.dataset.target, 10);
+    const suffix = el.dataset.suffix;
+    const prefix = el.dataset.prefix || "";
+    if(reduce || isNaN(target) || target <= 1){ return; }
+    const duration = 900;
+    const start = performance.now();
+    function tick(now){
+      const p = Math.min((now - start) / duration, 1);
+      const val = Math.round(1 + p * (target - 1));
+      el.textContent = prefix + val + suffix;
+      if(p < 1){ requestAnimationFrame(tick); }
+      else { el.textContent = prefix + target + suffix; }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  document.querySelectorAll(".stat").forEach(stat=>{
+    const numEl = stat.querySelector(".stat-num.num");
+    if(!numEl) return;
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ animateCount(numEl); io.unobserve(e.target); } });
+    },{threshold:0.4});
+    io.observe(stat);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Remember — Case Study by Hadas Kalfa</title>
+<meta name="description" content="Redesigning Remember, a digital memorial platform — turning a cold, confusing memorial form into an intuitive, emotionally supportive space for grieving families." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#F7F6F3;
+    --surface:#FFFFFF;
+    --ink:#1D1D1F;
+    --secondary:#5B5A57;
+    --muted:#9A968B;
+    --line:#E4E1D8;
+    --line-strong:#D3CFC4;
+    --accent:#0012D6;
+    --accent-soft:#E7E9FB;
+    --good:#1D7A57;
+    --on-dark:#F7F6F3;
+    --on-dark-muted:rgba(247,246,243,.56);
+    --on-dark-line:rgba(247,246,243,.14);
+    --near-black:#0F0F0F;
+    --font-display:"Bricolage Grotesque",-apple-system,system-ui,sans-serif;
+    --font-body:"Poppins",-apple-system,system-ui,sans-serif;
+    --max:1280px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-weight:400;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  ::selection{background:var(--accent);color:#fff;}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px;}
+
+  @media (pointer:fine){
+    body{cursor:none;}
+    #custom-cursor{
+      position:fixed;top:0;left:0;width:3.2px;height:3.2px;
+      background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;
+      transform:translate(-50%,-50%);
+      transition:width .3s cubic-bezier(.16,1,.3,1),height .3s cubic-bezier(.16,1,.3,1),background .3s ease,border-color .3s ease;
+      mix-blend-mode:difference;
+    }
+    #custom-cursor.hovering{
+      width:56px;height:56px;background:transparent;border:1px solid var(--accent);
+    }
+  }
+  @media (pointer:coarse){
+    #custom-cursor{display:none;}
+  }
+  @media (pointer:fine){
+    a,button{cursor:none;}
+  }
+
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 32px;}
+
+  /* nav */
+  .nav{position:sticky;top:0;z-index:50;background:rgba(247,246,243,0.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;}
+  .brand{font-family:var(--font-display);font-weight:600;font-size:18px;letter-spacing:-0.01em;}
+  .nav-links{display:flex;align-items:center;gap:32px;font-size:15px;font-weight:500;color:var(--secondary);}
+  .nav-links a{transition:color .18s ease;}
+  .nav-links a:hover{color:var(--ink);}
+  .back-link{display:inline-flex;align-items:center;gap:8px;}
+  .back-link .arrow{transition:transform .25s cubic-bezier(.22,.61,.36,1);}
+  .back-link:hover .arrow{transform:translateX(-4px);}
+
+  /* rise reveal */
+  .rise{opacity:0;transform:translateY(18px);}
+  .in .rise{opacity:1;transform:none;transition:opacity .7s cubic-bezier(.22,.61,.36,1),transform .7s cubic-bezier(.22,.61,.36,1);}
+  .in .d1{transition-delay:.05s;}.in .d2{transition-delay:.14s;}.in .d3{transition-delay:.23s;}
+
+  /* hero */
+  .cs-hero{padding:72px 0 64px;}
+  .cs-eyebrow{font-size:14px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);}
+  .cs-title{font-family:var(--font-display);font-weight:600;font-size:clamp(56px,10.5vw,152px);line-height:1.08;letter-spacing:-0.04em;margin-top:28px;max-width:17ch;}
+  .cs-sub{font-family:var(--font-display);font-weight:500;font-size:clamp(24px,3.2vw,38px);color:var(--secondary);margin-top:24px;letter-spacing:-0.015em;}
+  .cs-meta{display:flex;flex-wrap:wrap;gap:32px 48px;margin-top:44px;padding-top:32px;border-top:1px solid var(--line);}
+  .cs-meta-item .lbl{font-size:12.5px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);}
+  .cs-meta-item .val{font-size:18px;font-weight:500;color:var(--ink);margin-top:8px;}
+  .cs-hero-image{margin-top:56px;max-width:600px;}
+  .cs-hero-image img{width:100%;height:auto;display:block;border-radius:28px;filter:drop-shadow(0 36px 48px rgba(15,15,15,0.28)) drop-shadow(0 10px 16px rgba(15,15,15,0.22));}
+  @media (min-width:1024px){ .cs-hero-image{max-width:700px;} }
+
+  /* section frame */
+  .cs-section{padding:88px 0;border-top:1px solid var(--line);}
+  .cs-section.tight{padding:56px 0;}
+  .cs-label{font-size:14px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:22px;}
+  .cs-statement{font-family:var(--font-display);font-weight:600;font-size:clamp(34px,4.6vw,54px);letter-spacing:-0.03em;line-height:1.28;max-width:19ch;color:var(--ink);}
+  .cs-body{font-size:18.5px;color:var(--secondary);line-height:1.75;max-width:66ch;margin-top:24px;}
+  .cs-body + .cs-body{margin-top:16px;}
+
+  /* two column layout */
+  .cs-grid{display:grid;grid-template-columns:1fr;gap:56px;}
+  @media (min-width:860px){
+    .cs-grid.cols-2{grid-template-columns:1fr 1fr;}
+    .cs-grid.cols-2-wide{grid-template-columns:0.9fr 1.1fr;}
+  }
+
+  /* stats */
+  .stats-row{display:grid;grid-template-columns:1fr;gap:40px;margin-top:48px;}
+  @media (min-width:640px){ .stats-row{grid-template-columns:repeat(3,1fr);} }
+  .stat{border-top:1px solid var(--line-strong);padding-top:24px;}
+  .stat-num{font-family:var(--font-display);font-weight:600;font-size:clamp(48px,6vw,72px);color:var(--accent);letter-spacing:-0.02em;font-variant-numeric:tabular-nums;}
+  .stat-lbl{font-size:16px;color:var(--secondary);margin-top:12px;max-width:28ch;line-height:1.55;}
+
+  /* persona card */
+  .persona-card{border:1px solid var(--line);border-radius:28px;padding:56px;background:var(--surface);}
+  .persona-head{display:flex;align-items:center;gap:24px;}
+  .persona-avatar{width:88px;height:88px;border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--accent-soft);}
+  .persona-avatar img{width:100%;height:100%;object-fit:cover;}
+  .persona-name{font-family:var(--font-display);font-weight:600;font-size:clamp(30px,3.6vw,40px);letter-spacing:-0.02em;}
+  .persona-quote{font-family:var(--font-display);font-weight:500;font-size:clamp(22px,2.4vw,28px);line-height:1.45;letter-spacing:-0.015em;color:var(--ink);margin-top:32px;}
+  .persona-meta{display:grid;grid-template-columns:1fr 1fr;gap:22px 36px;margin-top:36px;padding-top:32px;border-top:1px solid var(--line);}
+  .persona-meta-item .lbl{font-size:12.5px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);}
+  .persona-meta-item .val{font-size:17px;color:var(--secondary);margin-top:8px;}
+  .persona-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+  .persona-tools .tag{font-size:13.5px;font-weight:500;color:var(--secondary);border:1px solid var(--line-strong);border-radius:20px;padding:5px 15px;}
+
+  .trait-grid{display:grid;grid-template-columns:1fr;gap:36px;margin-top:10px;}
+  @media (min-width:640px){ .trait-grid{grid-template-columns:1fr 1fr;} }
+  .trait h4{font-size:14.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink);margin-bottom:12px;}
+  .trait ul{list-style:none;display:flex;flex-direction:column;gap:10px;}
+  .trait li{font-size:16px;color:var(--secondary);line-height:1.6;padding-left:18px;position:relative;}
+  .trait li::before{content:"";position:absolute;left:0;top:10px;width:5px;height:5px;border-radius:50%;background:var(--accent);}
+
+  /* user journey */
+  .journey-track{display:flex;flex-direction:column;gap:24px;margin-top:8px;}
+  .journey-row{border:1px solid var(--line-strong);border-radius:20px;padding:28px;}
+  .journey-row.new{border-color:var(--accent);background:var(--accent-soft);}
+  .journey-row-label{font-size:13px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;}
+  .journey-row.new .journey-row-label{color:var(--accent);}
+  .journey-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;}
+  .journey-step{border-inline-start:2px solid var(--line-strong);padding-inline-start:14px;}
+  .journey-row.new .journey-step{border-inline-start-color:var(--accent);}
+  .step-title{font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:8px;}
+  .step-desc{font-size:14px;color:var(--secondary);line-height:1.55;}
+  @media (max-width:960px){ .journey-steps{grid-template-columns:1fr 1fr;} }
+  @media (max-width:560px){ .journey-steps{grid-template-columns:1fr;} }
+
+  /* pull quote / dark panel */
+  .cs-dark-panel{border-radius:28px;background:var(--near-black);color:var(--on-dark);padding:100px 48px;text-align:center;}
+  .cs-dark-panel .quote-mark{font-family:var(--font-display);font-size:44px;color:rgba(247,246,243,.28);}
+  .cs-dark-panel p{font-family:var(--font-display);font-weight:500;font-size:clamp(28px,4vw,46px);line-height:1.42;letter-spacing:-0.02em;max-width:28ch;margin:24px auto 0;}
+
+  /* goal panel (dark, bookend) */
+  .cs-goal{background:var(--near-black);color:var(--on-dark);border-radius:28px;padding:88px 48px;text-align:center;}
+  .cs-goal .cs-label{color:var(--accent);justify-content:center;}
+  .cs-goal p{font-family:var(--font-display);font-weight:600;font-size:clamp(32px,4.4vw,54px);line-height:1.4;letter-spacing:-0.025em;max-width:26ch;margin:24px auto 0;}
+
+  /* research logos */
+  .research-grid{display:grid;grid-template-columns:1fr;gap:40px;margin-top:40px;}
+  @media (min-width:640px){ .research-grid{grid-template-columns:1fr 1fr;} }
+  .research-item .rt{font-size:15.5px;font-weight:500;color:var(--secondary);margin-bottom:16px;}
+  .research-item .imgs{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;border:1px solid var(--line);border-radius:16px;padding:20px;background:var(--surface);min-height:96px;overflow:hidden;}
+  .research-item .imgs img{max-height:44px;max-width:100%;width:auto;height:auto;min-width:0;object-fit:contain;flex-shrink:1;}
+
+  /* numbered spec list — replaces old hand-drawn callout arrows */
+  .spec-list{list-style:none;display:flex;flex-direction:column;gap:28px;counter-reset:spec;}
+  .spec-list li{display:flex;gap:20px;align-items:flex-start;}
+  .spec-num{flex-shrink:0;width:38px;height:38px;border-radius:50%;border:1px solid var(--line-strong);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;font-size:14px;color:var(--accent);}
+  .spec-list h4{font-size:18px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+  .spec-list p{font-size:16px;color:var(--secondary);line-height:1.6;}
+
+  /* takeaways numbered rows */
+  .takeaway-grid{display:grid;grid-template-columns:1fr;gap:0;margin-top:40px;border-top:1px solid var(--line-strong);}
+  @media (min-width:760px){ .takeaway-grid{grid-template-columns:1fr 1fr;} }
+  .takeaway{padding:30px 0;border-bottom:1px solid var(--line-strong);display:flex;gap:22px;}
+  @media (min-width:760px){ .takeaway:nth-child(odd){padding-right:36px;border-right:1px solid var(--line-strong);} .takeaway:nth-child(even){padding-left:36px;} }
+  .takeaway .tnum{font-family:var(--font-display);font-weight:600;font-size:17px;color:var(--muted);flex-shrink:0;width:30px;}
+  .takeaway h4{font-size:18px;font-weight:600;color:var(--ink);margin-bottom:8px;}
+  .takeaway p{font-size:16px;color:var(--secondary);line-height:1.6;}
+
+  /* media blocks */
+  .media{display:flex;justify-content:center;}
+  .media img{max-width:100%;height:auto;display:block;border-radius:10px;filter:drop-shadow(0 24px 32px rgba(29,29,31,0.22)) drop-shadow(0 8px 12px rgba(29,29,31,0.16));}
+  .media.flat img{border-radius:16px;filter:drop-shadow(0 20px 30px rgba(29,29,31,0.18)) drop-shadow(0 6px 10px rgba(29,29,31,0.14));}
+  .media.breakout{width:100vw;max-width:1400px;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);}
+  .media-row{display:flex;flex-direction:column;gap:40px;align-items:center;}
+  @media (min-width:760px){ .media-row.two{flex-direction:row;align-items:flex-start;} .media-row.two .media{flex:1;} }
+  .mobile-strip{display:flex;gap:36px;overflow-x:auto;padding:14px 4px 22px;align-items:flex-end;}
+  .mobile-strip .media{flex:0 0 auto;width:210px;}
+  .mobile-strip .media img{border-radius:14px;}
+  .mobile-strip::-webkit-scrollbar{height:6px;}
+  .mobile-strip::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:10px;}
+
+  /* screen + caption pairing (each mockup sits directly above its own captions) */
+  .screen-grid{display:grid;grid-template-columns:1fr;gap:48px;}
+  @media (min-width:760px){ .screen-grid{grid-template-columns:repeat(3,1fr);align-items:start;} .screen-grid.cols-2{grid-template-columns:repeat(2,1fr);} }
+  .screen-item{display:flex;flex-direction:column;align-items:center;gap:28px;}
+  .screen-item .media img{max-width:220px;}
+  .screen-captions{display:flex;flex-direction:column;gap:20px;width:100%;max-width:260px;}
+  .screen-caption h4{font-size:15.5px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+  .screen-caption p{font-size:14px;color:var(--secondary);line-height:1.55;}
+
+  .subsection{margin-top:80px;}
+  .subsection:first-child{margin-top:0;}
+  .subsection h3{font-family:var(--font-display);font-weight:600;font-size:clamp(32px,4vw,46px);line-height:1.25;letter-spacing:-0.025em;margin-bottom:32px;}
+
+  /* cta button */
+  .cta-btn{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;font-weight:500;font-size:17px;border-radius:999px;padding:18px 34px;margin-top:36px;transition:transform .3s cubic-bezier(.22,.61,.36,1),box-shadow .3s ease;}
+  .cta-btn:hover{transform:translateY(-3px);box-shadow:0 16px 32px -12px rgba(0,18,214,0.4);}
+
+  /* footer next */
+  .next-panel{background:var(--near-black);color:var(--on-dark);border-radius:28px;padding:80px 56px;display:flex;flex-direction:column;gap:22px;align-items:flex-start;}
+  .next-panel .lbl{font-size:14px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--on-dark-muted);}
+  .next-panel h3{font-family:var(--font-display);font-weight:600;font-size:clamp(40px,6vw,72px);line-height:1.1;letter-spacing:-0.035em;}
+  .next-panel .go-link{display:inline-flex;align-items:center;gap:10px;font-size:17px;font-weight:500;color:var(--on-dark);border:1px solid var(--on-dark-line);border-radius:999px;padding:14px 24px;transition:border-color .3s ease,color .3s ease,background .3s ease;}
+  .next-panel .go-link:hover{border-color:var(--accent);color:var(--accent);}
+
+  @media (max-width:720px){
+    .wrap{padding:0 22px;}
+    .cs-hero{padding:44px 0 40px;}
+    .cs-section{padding:52px 0;}
+    .persona-card{padding:28px;}
+    .persona-meta{grid-template-columns:1fr;}
+    .cs-dark-panel{padding:56px 24px;}
+    .cs-goal{padding:52px 26px;}
+    .next-panel{padding:44px 26px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;}
+    .rise{opacity:1;transform:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<div id="custom-cursor" aria-hidden="true"></div>
+
+<nav class="nav" aria-label="Primary">
+  <div class="wrap">
+    <a href="index.html" class="brand">Hadas Kalfa</a>
+    <div class="nav-links">
+      <a href="index.html#work" class="back-link"><span class="arrow" aria-hidden="true">←</span> All Projects</a>
+      <a href="index.html#contact">Contact Me</a>
+    </div>
+  </div>
+</nav>
+
+<header class="cs-hero in">
+  <div class="wrap">
+    <span class="cs-eyebrow rise d1">Case Study · Remember</span>
+    <h1 class="cs-title rise d2">A Digital Memorial Platform</h1>
+    <p class="cs-sub rise d2">Redesigning &ldquo;Remember&rdquo; Experience</p>
+
+    <div class="cs-meta rise d3">
+      <div class="cs-meta-item"><div class="lbl">Date</div><div class="val">January, 2025</div></div>
+      <div class="cs-meta-item"><div class="lbl">Role</div><div class="val">UI/UX Product Designer</div></div>
+      <div class="cs-meta-item"><div class="lbl">Tools</div><div class="val">Figma, Adobe Photoshop</div></div>
+    </div>
+
+    <div class="cs-hero-image rise d3">
+      <img src="https://framerusercontent.com/images/RiP70f0CpYSB9LO6EEYMDUiN6I.png?width=1048&height=1179" alt="Remember platform hero visual" loading="eager">
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="cs-section in">
+    <div class="wrap cs-grid cols-2-wide">
+      <div>
+        <div class="cs-label">Overview</div>
+        <p class="cs-statement">A digital memorial platform for creating and sharing personalized memory pages.</p>
+      </div>
+      <div>
+        <p class="cs-body">Remember is an innovative digital memorial platform enabling the creation and sharing of personalized memory pages. In today's digital age, it offers a modern and accessible way to connect family and friends while preserving meaningful memories in an engaging and heartfelt manner.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section in">
+    <div class="wrap cs-grid cols-2-wide">
+      <div>
+        <div class="cs-label">Problem Statement</div>
+        <p class="cs-statement">A redesign was needed to make it intuitive, accessible, and emotionally resonant for users.</p>
+      </div>
+      <div>
+        <p class="cs-body">Remember's digital memorial platform faced usability challenges, including a complex interface, difficult navigation, and limited personalization. A redesign was needed to make it intuitive, accessible, and emotionally resonant for users.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section in" id="research">
+    <div class="wrap">
+      <div class="cs-label">Research</div>
+
+      <div class="subsection">
+        <h3>User Research</h3>
+        <p class="cs-body" style="margin-top:0;">A survey was conducted with 45 users, revealing that users often experienced frustration with the complex interface and unintuitive navigation. Due to this, there was a significant need to redesign Remember with a simpler, more emotionally supportive experience to help families preserve and share memories during difficult times, reducing stress and improving user satisfaction.</p>
+
+        <div class="stats-row">
+          <div class="stat">
+            <div class="stat-num num" data-target="78" data-suffix="%">78%</div>
+            <div class="stat-lbl">experienced confusion when trying to create a memorial page</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num num" data-target="65" data-suffix="%">65%</div>
+            <div class="stat-lbl">found it difficult to invite and coordinate with family members due to complicated sharing process</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num num" data-target="82" data-suffix="%">82%</div>
+            <div class="stat-lbl">expressed a need for a warmer, more supportive design that feels appropriate for the emotional context</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>User Journey</h3>
+        <div class="journey-track">
+          <div class="journey-row old">
+            <div class="journey-row-label">Common user journey</div>
+            <div class="journey-steps">
+              <div class="journey-step"><div class="step-title">Discovery</div><p class="step-desc">Opens the app wanting to create a Memorial but interface is confusing.</p></div>
+              <div class="journey-step"><div class="step-title">Creating Memorial</div><p class="step-desc">Fills long forms with many required fields.</p></div>
+              <div class="journey-step"><div class="step-title">Inviting Family</div><p class="step-desc">Needs to add each person manually with email — complicated process.</p></div>
+              <div class="journey-step"><div class="step-title">Viewing Memories</div><p class="step-desc">Can't find where to see memories the family uploaded.</p></div>
+              <div class="journey-step"><div class="step-title">Adding Memory</div><p class="step-desc">Interface not intuitive, hard to understand how to upload photos.</p></div>
+            </div>
+          </div>
+          <div class="journey-row new">
+            <div class="journey-row-label">Desired user journey</div>
+            <div class="journey-steps">
+              <div class="journey-step"><div class="step-title">Discovery</div><p class="step-desc">Opens the app and sees a clear "Create Memorial" button with simple onboarding.</p></div>
+              <div class="journey-step"><div class="step-title">Creating Memorial</div><p class="step-desc">Simple, short form — only essential fields, warm and inviting design.</p></div>
+              <div class="journey-step"><div class="step-title">Inviting Family</div><p class="step-desc">Easy sharing via WhatsApp or link — just one click.</p></div>
+              <div class="journey-step"><div class="step-title">Viewing Memories</div><p class="step-desc">Clear, clean feed — sees all memories in one place.</p></div>
+              <div class="journey-step"><div class="step-title">Adding Memory</div><p class="step-desc">Large, prominent "+" button — simple, fast upload process.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>User Persona</h3>
+        <div class="persona-card">
+          <div class="persona-head">
+            <div class="persona-avatar">
+              <img src="https://framerusercontent.com/images/rGdMIOYuGSaOzY6qGeRDWZejkTw.png?width=528&height=528" alt="David Levy" loading="lazy">
+            </div>
+            <div class="persona-name">David Levy, 45</div>
+          </div>
+
+          <p class="persona-quote">&ldquo;My father passed away 8 months ago. I'm looking for a meaningful way to keep his memory alive and bring our scattered family together.&rdquo;</p>
+
+          <div class="persona-meta">
+            <div class="persona-meta-item"><div class="lbl">Location</div><div class="val">Tel Aviv, Israel</div></div>
+            <div class="persona-meta-item"><div class="lbl">Job Title</div><div class="val">Software Engineer at a Tech Startup</div></div>
+            <div class="persona-meta-item"><div class="lbl">Tech Proficiency</div><div class="val">High</div></div>
+            <div class="persona-meta-item"><div class="lbl">Family Status</div><div class="val">Married + 3 children</div></div>
+          </div>
+
+          <div style="margin-top:24px;">
+            <div class="persona-meta-item"><div class="lbl">Digital Tools</div></div>
+            <div class="persona-tools">
+              <span class="tag">WhatsApp</span>
+              <span class="tag">LinkedIn</span>
+              <span class="tag">Gmail</span>
+              <span class="tag">Instagram</span>
+            </div>
+          </div>
+
+          <div class="trait-grid" style="margin-top:32px;padding-top:28px;border-top:1px solid var(--line);">
+            <div class="trait">
+              <h4>Goals</h4>
+              <ul>
+                <li>Preserve father's memories in one central, accessible place for the entire family.</li>
+                <li>Enable all family members to easily share photos, stories, and tributes.</li>
+                <li>Create a dignified digital memorial that feels personal and meaningful.</li>
+              </ul>
+            </div>
+            <div class="trait">
+              <h4>Pain Points</h4>
+              <ul>
+                <li>Users struggled with confusing navigation, overwhelming required fields, complicated family invitations, and a cold technical design that lacked emotional support during vulnerable times.</li>
+              </ul>
+            </div>
+            <div class="trait">
+              <h4>Motivations</h4>
+              <ul>
+                <li>Wants to honor his father's legacy in a modern, accessible way.</li>
+                <li>Needs a platform that brings the family together despite physical distance.</li>
+                <li>Values simplicity and ease-of-use during a vulnerable time.</li>
+              </ul>
+            </div>
+            <div class="trait">
+              <h4>Behaviors</h4>
+              <ul>
+                <li>Uses smartphone 3-4 hours daily for work and personal communication.</li>
+                <li>Prefers intuitive interfaces that don't require learning curves.</li>
+                <li>Despite being tech-savvy, appreciates simple, clear design over complex features.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section tight in">
+    <div class="wrap">
+      <div class="cs-dark-panel">
+        <div class="quote-mark" aria-hidden="true">&ldquo;</div>
+        <p>I was already dealing with grief, and then the platform added frustration on top of it. I just wanted something easy and warm that would help, not make things harder.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section in">
+    <div class="wrap">
+      <div class="cs-label">What did we research?</div>
+      <div class="research-grid">
+        <div class="research-item single">
+          <div class="rt">Memorial Platforms</div>
+          <div class="imgs"><img src="https://framerusercontent.com/images/j4ljFeHlCqjARH1PzagUJJOSoDk.png?width=1204&height=152" alt="Memorial platforms competitive research" loading="lazy"></div>
+        </div>
+        <div class="research-item">
+          <div class="rt">No-Code Design Platforms</div>
+          <div class="imgs">
+            <img src="https://framerusercontent.com/images/4nxAtauZWqFGVEuJhozKXiTK1M.png?width=225&height=225" alt="No-code design platform reference" loading="lazy">
+            <img src="https://framerusercontent.com/images/DpiFGyjsIPlpEcnpAcy78pfSxMU.png?width=225&height=225" alt="No-code design platform reference" loading="lazy">
+          </div>
+        </div>
+        <div class="research-item single">
+          <div class="rt">Social Media Platforms</div>
+          <div class="imgs"><img src="https://framerusercontent.com/images/bw9VSLjJN2JCmlx0YxdXxspEL4.png?width=404&height=165" alt="Social media platform research" loading="lazy"></div>
+        </div>
+        <div class="research-item">
+          <div class="rt">Storytelling Platforms</div>
+          <div class="imgs">
+            <img src="https://framerusercontent.com/images/wl6QYFG3GXZTCdyHpg6JudkU7KM.png?width=225&height=225" alt="Storytelling platform reference" loading="lazy">
+            <img src="https://framerusercontent.com/images/bHqazSJBVbi3ifJkfARkWX7nQk.png?width=431&height=117" alt="Storytelling platform reference" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section tight in">
+    <div class="wrap">
+      <div class="cs-goal">
+        <div class="cs-label">Goal</div>
+        <p>Redesign Remember's memorial platform to create a simple, intuitive, and emotionally supportive experience that enables families to preserve and share memories of loved ones without added stress during vulnerable times.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section in">
+    <div class="wrap">
+      <div class="cs-label">Takeaways</div>
+      <div class="takeaway-grid">
+        <div class="takeaway"><span class="tnum">01</span><div><h4>Emotional Design</h4><p>Warm colors and supportive language create comfort during grief.</p></div></div>
+        <div class="takeaway"><span class="tnum">02</span><div><h4>Progressive Disclosure</h4><p>Show only essential fields first to reduce overwhelm.</p></div></div>
+        <div class="takeaway"><span class="tnum">03</span><div><h4>One-Click Sharing</h4><p>WhatsApp integration made family invitations effortless.</p></div></div>
+        <div class="takeaway"><span class="tnum">04</span><div><h4>Clear Hierarchy</h4><p>Prominent CTAs guide users without confusion.</p></div></div>
+        <div class="takeaway"><span class="tnum">05</span><div><h4>Empathetic Testing</h4><p>Sensitive topics require careful, patient user research.</p></div></div>
+        <div class="takeaway"><span class="tnum">06</span><div><h4>Balance Form &amp; Function</h4><p>Memorial pages must feel personal yet maintain usability.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section in" id="solutions">
+    <div class="wrap">
+      <div class="cs-label">Solutions</div>
+
+      <div class="subsection">
+        <h3>Wireframes</h3>
+        <div class="media flat breakout"><img src="https://framerusercontent.com/images/93k6gHgHM4nCNetazatiglttQPE.png?width=2144&height=711" alt="Remember wireframes" loading="lazy"></div>
+      </div>
+
+      <div class="subsection">
+        <h3>UI Concept</h3>
+        <div class="cs-grid cols-2">
+          <div class="media flat"><img src="https://framerusercontent.com/images/8z84pZSAE6MxsOJ6SV9QUe0ZIyc.png?width=1325&height=728" alt="Inspiration board for the Remember redesign" loading="lazy"></div>
+          <ul class="spec-list">
+            <li><span class="spec-num">01</span><div><h4>Values-Driven Design</h4><p>Hope, memory, and pain shape the emotional depth of the design.</p></div></li>
+            <li><span class="spec-num">02</span><div><h4>Symbolic Colors</h4><p>Deep blue, light accents, and orange represent hope, creating a calming yet optimistic atmosphere.</p></div></li>
+            <li><span class="spec-num">03</span><div><h4>Optimistic Lighting</h4><p>The blend of orange and blue lighting evokes a sense of hope and resilience.</p></div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Design System</h3>
+        <div class="media flat breakout"><img src="https://framerusercontent.com/images/hBwPpEJwUHzJE4znzRg5soS8drI.png?width=2329&height=482" alt="Remember design system — color palette" loading="lazy"></div>
+      </div>
+
+      <div class="subsection">
+        <h3>Homepage</h3>
+        <p class="cs-body" style="margin-top:0;">The welcome screen sets a warm, comforting tone immediately using soft gradients in orange and blue to create hope and peace, avoiding the harsh technical feel of the previous version.</p>
+        <div class="cs-grid cols-2" style="margin-top:32px;align-items:center;">
+          <div class="media" style="max-width:320px;"><img src="https://framerusercontent.com/images/lZG7SLOnRWRPSU8uJJ0i8fMPDQ.png?width=718&height=1296" alt="Remember homepage mobile mockup" loading="lazy"></div>
+          <ul class="spec-list">
+            <li><span class="spec-num">01</span><div><h4>Clear Action</h4><p>Large, clear "Get Started" button — no confusion about next steps.</p></div></li>
+            <li><span class="spec-num">02</span><div><h4>Load Reduction</h4><p>Minimal text to avoid overwhelming users during vulnerable times.</p></div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Creating Memorial Pages</h3>
+        <p class="cs-body" style="margin-top:0;">A comprehensive interface with fixed header displaying name/image, interactive family tree, multimedia sections (videos, gallery, stories), favorites for cherished memories, and hobby documentation. Side menu provides quick access to all actions, creating a respectful digital remembrance experience.</p>
+        <div class="media-row two" style="margin-top:28px;">
+          <div class="media flat"><img src="https://framerusercontent.com/images/k9HSPAAuF2EzMaHLGWQcAnqGE.png?width=2272&height=1454" alt="Memorial page screen — desktop view 1" loading="lazy"></div>
+          <div class="media flat"><img src="https://framerusercontent.com/images/7a7jCQdYT6DhLREodF2Jc8E7Cgs.png?width=1754&height=1447" alt="Memorial page screen — desktop view 2" loading="lazy"></div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Store</h3>
+        <p class="cs-body" style="margin-top:0;">A marketplace for memorial-related products and services, featuring candles, flowers, and personalized items for digital and physical tributes. The interface emphasizes emotional connection through curated offerings while maintaining a respectful, commerce-enabled experience for families seeking meaningful ways to honor their loved ones.</p>
+        <div class="cs-grid cols-2" style="margin-top:32px;align-items:center;">
+          <div class="media" style="max-width:320px;"><img src="https://framerusercontent.com/images/l2dFjR2Vo1R0UB2hG5PizOCSUk.png?width=716&height=1293" alt="Store section mobile mockup" loading="lazy"></div>
+          <ul class="spec-list">
+            <li><span class="spec-num">01</span><div><h4>Store Features Summary</h4><p>Intuitive category navigation with compact thumbnails and prominent pricing hierarchy for seamless product browsing experience.</p></div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Account</h3>
+        <p class="cs-body" style="margin-top:0;">The Account section provides users with complete control over their profile and settings. The intuitive interface manages personal details, notifications, and backup preferences while maintaining visual consistency and clear hierarchy for seamless navigation.</p>
+
+        <div class="screen-grid" style="margin-top:40px;">
+          <div class="screen-item">
+            <div class="media"><img src="https://framerusercontent.com/images/FbNTzlL22ZSqal28ohCHdUl6788.png?width=492&height=1104" alt="Pages Created screen" loading="lazy"></div>
+            <div class="screen-captions">
+              <div class="screen-caption"><h4>Effortless Page Filtering</h4><p>A filtering option makes finding specific pages quick and simple.</p></div>
+              <div class="screen-caption"><h4>Centralized Page Editing</h4><p>All editing options are conveniently located in one place on the page.</p></div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="media"><img src="https://framerusercontent.com/images/id4VJSfY3xywM8Lg0zyXptkNQ.png?width=492&height=1104" alt="Activity and analytics screen" loading="lazy"></div>
+            <div class="screen-captions">
+              <div class="screen-caption"><h4>Analytics Overview</h4><p>Review and analysis of views, flowers, and candles with the option of graph display.</p></div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="media"><img src="https://framerusercontent.com/images/hy8gvYTPonD5JrcOdQupym3oIzE.png?width=246&height=552" alt="Approve stories screen" loading="lazy"></div>
+            <div class="screen-captions">
+              <div class="screen-caption"><h4>View Stories Needing Approval</h4><p>All stories requiring approval are displayed in one place, with expandable drawers for easy reading.</p></div>
+              <div class="screen-caption"><h4>Instant Approval or Rejection</h4><p>Approving or rejecting stories written about the deceased, with the option to contact the sender.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Public Memorial Page</h3>
+        <p class="cs-body" style="margin-top:0;">The page every visitor sees balances a clear information hierarchy with warmth — presenting Remember's strengths first, then building trust through the founder's own story.</p>
+
+        <div class="screen-grid cols-2" style="margin-top:40px;">
+          <div class="screen-item">
+            <div class="media"><img src="https://framerusercontent.com/images/9c58lxAxkvbqROAaee8P32Ggg.jpg?width=246&height=535" alt="Public memorial page, visitor view 1" loading="lazy"></div>
+            <div class="screen-captions">
+              <div class="screen-caption"><h4>Clear Information Hierarchy</h4><p>Presenting Remember's strengths and differentiation first, in a clear and illuminating manner.</p></div>
+            </div>
+          </div>
+          <div class="screen-item">
+            <div class="media"><img src="https://framerusercontent.com/images/FMCvq94VVTqnKyr4Nyg1bAriU.png?width=246&height=535" alt="Public memorial page, visitor view 2" loading="lazy"></div>
+            <div class="screen-captions">
+              <div class="screen-caption"><h4>Trust &amp; Explanation</h4><p>A clear, organized explanation of the platform's value — including the founder's personal story — followed by a call-to-action after each function.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <a class="cta-btn" href="https://www.figma.com/proto/bSoBIxSXBShzFwnbNFXZBv/Remember?page-id=4051%3A15238&node-id=4275-33703&p=f&viewport=16787%2C5738%2C1&t=l8G1l9ABU740bWdi-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=4275%3A33703" target="_blank" rel="noopener">
+        Try it yourself
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="cs-section tight in">
+    <div class="wrap">
+      <div class="next-panel">
+        <div class="lbl">Keep exploring</div>
+        <h3>Back to all projects</h3>
+        <a class="go-link" href="index.html#work">View more work <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if(window.matchMedia("(pointer: fine)").matches){
+    const cursor = document.getElementById("custom-cursor");
+    document.addEventListener("mousemove", (e)=>{
+      cursor.style.left = e.clientX + "px";
+      cursor.style.top = e.clientY + "px";
+    });
+    document.querySelectorAll("a, button").forEach(el=>{
+      el.addEventListener("mouseenter", ()=>cursor.classList.add("hovering"));
+      el.addEventListener("mouseleave", ()=>cursor.classList.remove("hovering"));
+    });
+  }
+
+  document.querySelectorAll(".stat-num").forEach(el=>{
+    const target = parseInt(el.dataset.target, 10);
+    const suffix = el.dataset.suffix || "";
+    el.dataset.target = target;
+    el.dataset.suffix = suffix;
+  });
+
+  function animateCount(el){
+    const target = parseInt(el.dataset.target, 10);
+    const suffix = el.dataset.suffix;
+    if(reduce || isNaN(target) || target <= 1){ return; }
+    const duration = 900;
+    const start = performance.now();
+    function tick(now){
+      const p = Math.min((now - start) / duration, 1);
+      const val = Math.round(1 + p * (target - 1));
+      el.textContent = val + suffix;
+      if(p < 1){ requestAnimationFrame(tick); }
+      else { el.textContent = target + suffix; }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  document.querySelectorAll(".stat").forEach(stat=>{
+    const numEl = stat.querySelector(".stat-num");
+    if(!numEl) return;
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ animateCount(numEl); io.unobserve(e.target); } });
+    },{threshold:0.4});
+    io.observe(stat);
+  });
+</script>
+</body>
+</html>
