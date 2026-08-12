@@ -3,28 +3,29 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Remember — Case Study by Hadas Kalfa</title>
-<meta name="description" content="Redesigning Remember, a digital memorial platform — turning a cold, confusing memorial form into an intuitive, emotionally supportive space for grieving families." />
+<title>Remember: Case Study by Hadas Kalfa</title>
+<meta name="description" content="Redesigning Remember, a digital memorial platform: turning a cold, confusing memorial form into an intuitive, emotionally supportive space for grieving families." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root{
-    --paper:#F7F6F3;
+    --paper:#F7F7F5;
     --surface:#FFFFFF;
-    --ink:#1D1D1F;
-    --secondary:#5B5A57;
+    --ink:#0B2852;
+    --secondary:#646464;
     --muted:#9A968B;
     --line:#E4E1D8;
     --line-strong:#D3CFC4;
-    --accent:#0012D6;
-    --accent-soft:#E7E9FB;
+    --accent:#FD7F41;
+    --accent-soft:#FDE9DE;
+    --navy:#0B2852;
+    --coral:#ED7352;
     --good:#1D7A57;
-    --on-dark:#F7F6F3;
-    --on-dark-muted:rgba(247,246,243,.56);
-    --on-dark-line:rgba(247,246,243,.14);
-    --near-black:#0F0F0F;
-    --font-display:"Bricolage Grotesque",-apple-system,system-ui,sans-serif;
+    --on-dark:#FFFFFF;
+    --on-dark-muted:rgba(255,255,255,.56);
+    --on-dark-line:rgba(255,255,255,.14);
+    --font-display:"Poppins",-apple-system,system-ui,sans-serif;
     --font-body:"Poppins",-apple-system,system-ui,sans-serif;
     --max:1280px;
   }
@@ -80,24 +81,33 @@
   .in .rise{opacity:1;transform:none;transition:opacity .7s cubic-bezier(.22,.61,.36,1),transform .7s cubic-bezier(.22,.61,.36,1);}
   .in .d1{transition-delay:.05s;}.in .d2{transition-delay:.14s;}.in .d3{transition-delay:.23s;}
 
-  /* hero */
-  .cs-hero{padding:72px 0 64px;}
-  .cs-eyebrow{font-size:14px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);}
-  .cs-title{font-family:var(--font-display);font-weight:600;font-size:clamp(56px,10.5vw,152px);line-height:1.08;letter-spacing:-0.04em;margin-top:28px;max-width:17ch;}
-  .cs-sub{font-family:var(--font-display);font-weight:500;font-size:clamp(24px,3.2vw,38px);color:var(--secondary);margin-top:24px;letter-spacing:-0.015em;}
-  .cs-meta{display:flex;flex-wrap:wrap;gap:32px 48px;margin-top:44px;padding-top:32px;border-top:1px solid var(--line);}
-  .cs-meta-item .lbl{font-size:12.5px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);}
-  .cs-meta-item .val{font-size:18px;font-weight:500;color:var(--ink);margin-top:8px;}
-  .cs-hero-image{margin-top:56px;max-width:600px;}
-  .cs-hero-image img{width:100%;height:auto;display:block;border-radius:28px;filter:drop-shadow(0 36px 48px rgba(15,15,15,0.28)) drop-shadow(0 10px 16px rgba(15,15,15,0.22));}
-  @media (min-width:1024px){ .cs-hero-image{max-width:700px;} }
+  /* hero — exact values below match live Framer source (global-football-283605.framer.app) at 1440px desktop;
+     below that breakpoint the layout stacks/scales fluidly since no source data exists for narrower widths. */
+  .remember-hero{background:#487491;padding:64px 24px 48px;}
+  .remember-hero-inner{display:flex;flex-direction:column;align-items:flex-start;gap:40px;}
+  .remember-hero-text{width:100%;max-width:512px;flex:none;}
+  .remember-hero-title{font-family:"Poppins","Poppins Placeholder",sans-serif;font-weight:700;font-size:clamp(34px,7vw,55px);line-height:1.1;letter-spacing:-0.02em;color:#F9FBFF;}
+  .remember-hero-sub{font-family:"Poppins","Poppins Placeholder",sans-serif;font-weight:400;font-size:clamp(18px,3.4vw,27px);line-height:1.2;letter-spacing:-0.02em;color:#F9FBFF;margin-top:2px;}
+  .remember-hero-meta{margin-top:40px;}
+  .remember-hero-meta p{font-family:"Poppins","Poppins Placeholder",sans-serif;font-weight:300;font-size:18px;line-height:1.5;letter-spacing:-0.01em;color:#F9FBFF;}
+  .remember-hero-meta p + p{margin-top:8px;}
+  .remember-hero-meta .lbl{font-weight:500;}
+  .remember-hero-media{flex:none;width:100%;max-width:418px;}
+  .remember-hero-media img{width:100%;height:auto;display:block;}
+  @media (min-width:1300px){
+    .remember-hero{padding:244px 0 78px 150px;}
+    .remember-hero-inner{flex-direction:row;align-items:flex-start;gap:132px;}
+    .remember-hero-text{width:512px;}
+    .remember-hero-meta{margin-top:305px;}
+    .remember-hero-media{width:418px;margin-top:17px;}
+  }
 
-  /* section frame */
-  .cs-section{padding:88px 0;border-top:1px solid var(--line);}
+  /* section frame — no divider border between sections (verified: none in source) */
+  .cs-section{padding:88px 0;}
   .cs-section.tight{padding:56px 0;}
-  .cs-label{font-size:14px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:22px;}
-  .cs-statement{font-family:var(--font-display);font-weight:600;font-size:clamp(34px,4.6vw,54px);letter-spacing:-0.03em;line-height:1.28;max-width:19ch;color:var(--ink);}
-  .cs-body{font-size:18.5px;color:var(--secondary);line-height:1.75;max-width:66ch;margin-top:24px;}
+  .cs-label{font-family:var(--font-display);font-weight:300;font-size:clamp(32px,4vw,56px);letter-spacing:-0.01em;color:var(--accent);margin-bottom:0;}
+  .cs-statement{font-family:var(--font-display);font-weight:500;font-size:32px;letter-spacing:normal;line-height:1.3;max-width:19ch;color:var(--navy);}
+  .cs-body{font-size:18px;color:var(--secondary);line-height:1.6;max-width:66ch;margin-top:24px;}
   .cs-body + .cs-body{margin-top:16px;}
 
   /* two column layout */
@@ -107,12 +117,13 @@
     .cs-grid.cols-2-wide{grid-template-columns:0.9fr 1.1fr;}
   }
 
-  /* stats */
+  /* stats — circular progress ring, matched to source (SVG donut, orange fill on #E7E7E7 track) */
   .stats-row{display:grid;grid-template-columns:1fr;gap:40px;margin-top:48px;}
   @media (min-width:640px){ .stats-row{grid-template-columns:repeat(3,1fr);} }
-  .stat{border-top:1px solid var(--line-strong);padding-top:24px;}
-  .stat-num{font-family:var(--font-display);font-weight:600;font-size:clamp(48px,6vw,72px);color:var(--accent);letter-spacing:-0.02em;font-variant-numeric:tabular-nums;}
-  .stat-lbl{font-size:16px;color:var(--secondary);margin-top:12px;max-width:28ch;line-height:1.55;}
+  .stat-ring{width:137px;height:137px;border-radius:50%;background:conic-gradient(var(--accent) var(--pct),#E7E7E7 0);display:flex;align-items:center;justify-content:center;position:relative;}
+  .stat-ring::before{content:"";position:absolute;inset:10px;border-radius:50%;background:var(--paper);}
+  .stat-num{position:relative;z-index:1;font-family:var(--font-display);font-weight:500;font-size:32px;color:var(--navy);letter-spacing:normal;font-variant-numeric:tabular-nums;}
+  .stat-lbl{font-size:16px;color:var(--secondary);margin-top:16px;max-width:28ch;line-height:1.55;}
 
   /* persona card */
   .persona-card{border:1px solid var(--line);border-radius:28px;padding:56px;background:var(--surface);}
@@ -148,15 +159,13 @@
   @media (max-width:960px){ .journey-steps{grid-template-columns:1fr 1fr;} }
   @media (max-width:560px){ .journey-steps{grid-template-columns:1fr;} }
 
-  /* pull quote / dark panel */
-  .cs-dark-panel{border-radius:28px;background:var(--near-black);color:var(--on-dark);padding:100px 48px;text-align:center;}
-  .cs-dark-panel .quote-mark{font-family:var(--font-display);font-size:44px;color:rgba(247,246,243,.28);}
-  .cs-dark-panel p{font-family:var(--font-display);font-weight:500;font-size:clamp(28px,4vw,46px);line-height:1.42;letter-spacing:-0.02em;max-width:28ch;margin:24px auto 0;}
+  /* pull quote — plain text on page background, no panel (verified: no dark panel in source) */
+  .cs-quote p{font-family:var(--font-display);font-weight:500;font-size:32px;line-height:1.3;color:var(--secondary);max-width:22ch;}
 
-  /* goal panel (dark, bookend) */
-  .cs-goal{background:var(--near-black);color:var(--on-dark);border-radius:28px;padding:88px 48px;text-align:center;}
+  /* goal panel (navy, bookend) */
+  .cs-goal{background:var(--navy);color:var(--on-dark);border-radius:28px;padding:88px 48px;text-align:center;}
   .cs-goal .cs-label{color:var(--accent);justify-content:center;}
-  .cs-goal p{font-family:var(--font-display);font-weight:600;font-size:clamp(32px,4.4vw,54px);line-height:1.4;letter-spacing:-0.025em;max-width:26ch;margin:24px auto 0;}
+  .cs-goal p{font-family:var(--font-display);font-weight:600;font-size:18px;line-height:1.6;letter-spacing:normal;max-width:26ch;margin:24px auto 0;}
 
   /* research logos */
   .research-grid{display:grid;grid-template-columns:1fr;gap:40px;margin-top:40px;}
@@ -185,7 +194,6 @@
   .media{display:flex;justify-content:center;}
   .media img{max-width:100%;height:auto;display:block;border-radius:10px;filter:drop-shadow(0 24px 32px rgba(29,29,31,0.22)) drop-shadow(0 8px 12px rgba(29,29,31,0.16));}
   .media.flat img{border-radius:16px;filter:drop-shadow(0 20px 30px rgba(29,29,31,0.18)) drop-shadow(0 6px 10px rgba(29,29,31,0.14));}
-  .media.breakout{width:100vw;max-width:1400px;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);}
   .media-row{display:flex;flex-direction:column;gap:40px;align-items:center;}
   @media (min-width:760px){ .media-row.two{flex-direction:row;align-items:flex-start;} .media-row.two .media{flex:1;} }
   .mobile-strip{display:flex;gap:36px;overflow-x:auto;padding:14px 4px 22px;align-items:flex-end;}
@@ -208,11 +216,11 @@
   .subsection h3{font-family:var(--font-display);font-weight:600;font-size:clamp(32px,4vw,46px);line-height:1.25;letter-spacing:-0.025em;margin-bottom:32px;}
 
   /* cta button */
-  .cta-btn{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;font-weight:500;font-size:17px;border-radius:999px;padding:18px 34px;margin-top:36px;transition:transform .3s cubic-bezier(.22,.61,.36,1),box-shadow .3s ease;}
-  .cta-btn:hover{transform:translateY(-3px);box-shadow:0 16px 32px -12px rgba(0,18,214,0.4);}
+  .cta-btn{display:inline-flex;align-items:center;gap:10px;background:var(--coral);color:#fff;font-weight:400;font-size:20px;border-radius:24px;padding:18px 34px;margin-top:36px;transition:transform .3s cubic-bezier(.22,.61,.36,1),box-shadow .3s ease;}
+  .cta-btn:hover{transform:translateY(-3px);box-shadow:0 16px 32px -12px rgba(237,115,82,0.4);}
 
   /* footer next */
-  .next-panel{background:var(--near-black);color:var(--on-dark);border-radius:28px;padding:80px 56px;display:flex;flex-direction:column;gap:22px;align-items:flex-start;}
+  .next-panel{background:var(--navy);color:var(--on-dark);border-radius:28px;padding:80px 56px;display:flex;flex-direction:column;gap:22px;align-items:flex-start;}
   .next-panel .lbl{font-size:14px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--on-dark-muted);}
   .next-panel h3{font-family:var(--font-display);font-weight:600;font-size:clamp(40px,6vw,72px);line-height:1.1;letter-spacing:-0.035em;}
   .next-panel .go-link{display:inline-flex;align-items:center;gap:10px;font-size:17px;font-weight:500;color:var(--on-dark);border:1px solid var(--on-dark-line);border-radius:999px;padding:14px 24px;transition:border-color .3s ease,color .3s ease,background .3s ease;}
@@ -249,20 +257,19 @@
   </div>
 </nav>
 
-<header class="cs-hero in">
-  <div class="wrap">
-    <span class="cs-eyebrow rise d1">Case Study · Remember</span>
-    <h1 class="cs-title rise d2">A Digital Memorial Platform</h1>
-    <p class="cs-sub rise d2">Redesigning &ldquo;Remember&rdquo; Experience</p>
-
-    <div class="cs-meta rise d3">
-      <div class="cs-meta-item"><div class="lbl">Date</div><div class="val">January, 2025</div></div>
-      <div class="cs-meta-item"><div class="lbl">Role</div><div class="val">UI/UX Product Designer</div></div>
-      <div class="cs-meta-item"><div class="lbl">Tools</div><div class="val">Figma, Adobe Photoshop</div></div>
+<header class="remember-hero">
+  <div class="remember-hero-inner">
+    <div class="remember-hero-text">
+      <h1 class="remember-hero-title">A Digital<br>Memorial Platform</h1>
+      <p class="remember-hero-sub">Redesigning &ldquo;Remember&rdquo; Experience</p>
+      <div class="remember-hero-meta">
+        <p>January, 2025</p>
+        <p><span class="lbl">Role:</span> UI/UX Product Designer</p>
+        <p><span class="lbl">Tools:</span> Figma, Adobe Photoshop</p>
+      </div>
     </div>
-
-    <div class="cs-hero-image rise d3">
-      <img src="https://framerusercontent.com/images/RiP70f0CpYSB9LO6EEYMDUiN6I.png?width=1048&height=1179" alt="Remember platform hero visual" loading="eager">
+    <div class="remember-hero-media">
+      <img src="https://framerusercontent.com/images/RiP70f0CpYSB9LO6EEYMDUiN6I.png?width=1048&height=1179" alt="Remember platform hero visual" width="1048" height="1179" loading="eager">
     </div>
   </div>
 </header>
@@ -270,26 +277,18 @@
 <main>
 
   <section class="cs-section in">
-    <div class="wrap cs-grid cols-2-wide">
-      <div>
-        <div class="cs-label">Overview</div>
-        <p class="cs-statement">A digital memorial platform for creating and sharing personalized memory pages.</p>
-      </div>
-      <div>
-        <p class="cs-body">Remember is an innovative digital memorial platform enabling the creation and sharing of personalized memory pages. In today's digital age, it offers a modern and accessible way to connect family and friends while preserving meaningful memories in an engaging and heartfelt manner.</p>
-      </div>
+    <div class="wrap">
+      <div class="cs-label">Overview</div>
+      <p class="cs-statement">A digital memorial platform for creating and sharing personalized memory pages.</p>
+      <p class="cs-body" style="max-width:52ch;">Remember is an innovative digital memorial platform enabling the creation and sharing of personalized memory pages. In today's digital age, it offers a modern and accessible way to connect family and friends while preserving meaningful memories in an engaging and heartfelt manner.</p>
     </div>
   </section>
 
   <section class="cs-section in">
-    <div class="wrap cs-grid cols-2-wide">
-      <div>
-        <div class="cs-label">Problem Statement</div>
-        <p class="cs-statement">A redesign was needed to make it intuitive, accessible, and emotionally resonant for users.</p>
-      </div>
-      <div>
-        <p class="cs-body">Remember's digital memorial platform faced usability challenges, including a complex interface, difficult navigation, and limited personalization. A redesign was needed to make it intuitive, accessible, and emotionally resonant for users.</p>
-      </div>
+    <div class="wrap">
+      <div class="cs-label">Problem</div>
+      <p class="cs-statement">A redesign was needed to make it intuitive, accessible, and emotionally resonant for users.</p>
+      <p class="cs-body" style="max-width:52ch;">Remember's digital memorial platform faced usability challenges, including a complex interface, difficult navigation, and limited personalization. A redesign was needed to make it intuitive, accessible, and emotionally resonant for users.</p>
     </div>
   </section>
 
@@ -303,15 +302,15 @@
 
         <div class="stats-row">
           <div class="stat">
-            <div class="stat-num num" data-target="78" data-suffix="%">78%</div>
+            <div class="stat-ring" style="--pct:78%"><div class="stat-num num" data-target="78" data-suffix="%">78%</div></div>
             <div class="stat-lbl">experienced confusion when trying to create a memorial page</div>
           </div>
           <div class="stat">
-            <div class="stat-num num" data-target="65" data-suffix="%">65%</div>
+            <div class="stat-ring" style="--pct:65%"><div class="stat-num num" data-target="65" data-suffix="%">65%</div></div>
             <div class="stat-lbl">found it difficult to invite and coordinate with family members due to complicated sharing process</div>
           </div>
           <div class="stat">
-            <div class="stat-num num" data-target="82" data-suffix="%">82%</div>
+            <div class="stat-ring" style="--pct:82%"><div class="stat-num num" data-target="82" data-suffix="%">82%</div></div>
             <div class="stat-lbl">expressed a need for a warmer, more supportive design that feels appropriate for the emotional context</div>
           </div>
         </div>
@@ -325,7 +324,7 @@
             <div class="journey-steps">
               <div class="journey-step"><div class="step-title">Discovery</div><p class="step-desc">Opens the app wanting to create a Memorial but interface is confusing.</p></div>
               <div class="journey-step"><div class="step-title">Creating Memorial</div><p class="step-desc">Fills long forms with many required fields.</p></div>
-              <div class="journey-step"><div class="step-title">Inviting Family</div><p class="step-desc">Needs to add each person manually with email — complicated process.</p></div>
+              <div class="journey-step"><div class="step-title">Inviting Family</div><p class="step-desc">Needs to add each person manually with email: complicated process.</p></div>
               <div class="journey-step"><div class="step-title">Viewing Memories</div><p class="step-desc">Can't find where to see memories the family uploaded.</p></div>
               <div class="journey-step"><div class="step-title">Adding Memory</div><p class="step-desc">Interface not intuitive, hard to understand how to upload photos.</p></div>
             </div>
@@ -334,10 +333,10 @@
             <div class="journey-row-label">Desired user journey</div>
             <div class="journey-steps">
               <div class="journey-step"><div class="step-title">Discovery</div><p class="step-desc">Opens the app and sees a clear "Create Memorial" button with simple onboarding.</p></div>
-              <div class="journey-step"><div class="step-title">Creating Memorial</div><p class="step-desc">Simple, short form — only essential fields, warm and inviting design.</p></div>
-              <div class="journey-step"><div class="step-title">Inviting Family</div><p class="step-desc">Easy sharing via WhatsApp or link — just one click.</p></div>
-              <div class="journey-step"><div class="step-title">Viewing Memories</div><p class="step-desc">Clear, clean feed — sees all memories in one place.</p></div>
-              <div class="journey-step"><div class="step-title">Adding Memory</div><p class="step-desc">Large, prominent "+" button — simple, fast upload process.</p></div>
+              <div class="journey-step"><div class="step-title">Creating Memorial</div><p class="step-desc">Simple, short form: only essential fields, warm and inviting design.</p></div>
+              <div class="journey-step"><div class="step-title">Inviting Family</div><p class="step-desc">Easy sharing via WhatsApp or link: just one click.</p></div>
+              <div class="journey-step"><div class="step-title">Viewing Memories</div><p class="step-desc">Clear, clean feed: sees all memories in one place.</p></div>
+              <div class="journey-step"><div class="step-title">Adding Memory</div><p class="step-desc">Large, prominent "+" button: simple, fast upload process.</p></div>
             </div>
           </div>
         </div>
@@ -410,11 +409,8 @@
   </section>
 
   <section class="cs-section tight in">
-    <div class="wrap">
-      <div class="cs-dark-panel">
-        <div class="quote-mark" aria-hidden="true">&ldquo;</div>
-        <p>I was already dealing with grief, and then the platform added frustration on top of it. I just wanted something easy and warm that would help, not make things harder.</p>
-      </div>
+    <div class="wrap cs-quote">
+      <p>I was already dealing with grief, and then the platform added frustration on top of it. I just wanted something easy and warm that would help, not make things harder.</p>
     </div>
   </section>
 
@@ -477,7 +473,7 @@
 
       <div class="subsection">
         <h3>Wireframes</h3>
-        <div class="media flat breakout"><img src="https://framerusercontent.com/images/93k6gHgHM4nCNetazatiglttQPE.png?width=2144&height=711" alt="Remember wireframes" loading="lazy"></div>
+        <div class="media flat"><img src="https://framerusercontent.com/images/93k6gHgHM4nCNetazatiglttQPE.png?width=2144&height=711" alt="Remember wireframes" loading="lazy"></div>
       </div>
 
       <div class="subsection">
@@ -494,7 +490,7 @@
 
       <div class="subsection">
         <h3>Design System</h3>
-        <div class="media flat breakout"><img src="https://framerusercontent.com/images/hBwPpEJwUHzJE4znzRg5soS8drI.png?width=2329&height=482" alt="Remember design system — color palette" loading="lazy"></div>
+        <div class="media flat"><img src="https://framerusercontent.com/images/hBwPpEJwUHzJE4znzRg5soS8drI.png?width=2329&height=482" alt="Remember design system: color palette" loading="lazy"></div>
       </div>
 
       <div class="subsection">
@@ -503,7 +499,7 @@
         <div class="cs-grid cols-2" style="margin-top:32px;align-items:center;">
           <div class="media" style="max-width:320px;"><img src="https://framerusercontent.com/images/lZG7SLOnRWRPSU8uJJ0i8fMPDQ.png?width=718&height=1296" alt="Remember homepage mobile mockup" loading="lazy"></div>
           <ul class="spec-list">
-            <li><span class="spec-num">01</span><div><h4>Clear Action</h4><p>Large, clear "Get Started" button — no confusion about next steps.</p></div></li>
+            <li><span class="spec-num">01</span><div><h4>Clear Action</h4><p>Large, clear "Get Started" button: no confusion about next steps.</p></div></li>
             <li><span class="spec-num">02</span><div><h4>Load Reduction</h4><p>Minimal text to avoid overwhelming users during vulnerable times.</p></div></li>
           </ul>
         </div>
@@ -513,8 +509,8 @@
         <h3>Creating Memorial Pages</h3>
         <p class="cs-body" style="margin-top:0;">A comprehensive interface with fixed header displaying name/image, interactive family tree, multimedia sections (videos, gallery, stories), favorites for cherished memories, and hobby documentation. Side menu provides quick access to all actions, creating a respectful digital remembrance experience.</p>
         <div class="media-row two" style="margin-top:28px;">
-          <div class="media flat"><img src="https://framerusercontent.com/images/k9HSPAAuF2EzMaHLGWQcAnqGE.png?width=2272&height=1454" alt="Memorial page screen — desktop view 1" loading="lazy"></div>
-          <div class="media flat"><img src="https://framerusercontent.com/images/7a7jCQdYT6DhLREodF2Jc8E7Cgs.png?width=1754&height=1447" alt="Memorial page screen — desktop view 2" loading="lazy"></div>
+          <div class="media flat"><img src="https://framerusercontent.com/images/k9HSPAAuF2EzMaHLGWQcAnqGE.png?width=2272&height=1454" alt="Memorial page screen: desktop view 1" loading="lazy"></div>
+          <div class="media flat"><img src="https://framerusercontent.com/images/7a7jCQdYT6DhLREodF2Jc8E7Cgs.png?width=1754&height=1447" alt="Memorial page screen: desktop view 2" loading="lazy"></div>
         </div>
       </div>
 
@@ -559,7 +555,7 @@
 
       <div class="subsection">
         <h3>Public Memorial Page</h3>
-        <p class="cs-body" style="margin-top:0;">The page every visitor sees balances a clear information hierarchy with warmth — presenting Remember's strengths first, then building trust through the founder's own story.</p>
+        <p class="cs-body" style="margin-top:0;">The page every visitor sees balances a clear information hierarchy with warmth, presenting Remember's strengths first, then building trust through the founder's own story.</p>
 
         <div class="screen-grid cols-2" style="margin-top:40px;">
           <div class="screen-item">
@@ -571,7 +567,7 @@
           <div class="screen-item">
             <div class="media"><img src="https://framerusercontent.com/images/FMCvq94VVTqnKyr4Nyg1bAriU.png?width=246&height=535" alt="Public memorial page, visitor view 2" loading="lazy"></div>
             <div class="screen-captions">
-              <div class="screen-caption"><h4>Trust &amp; Explanation</h4><p>A clear, organized explanation of the platform's value — including the founder's personal story — followed by a call-to-action after each function.</p></div>
+              <div class="screen-caption"><h4>Trust &amp; Explanation</h4><p>A clear, organized explanation of the platform's value, including the founder's personal story, followed by a call-to-action after each function.</p></div>
             </div>
           </div>
         </div>
